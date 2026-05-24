@@ -1,9 +1,9 @@
-import React from 'react';
+
 import { X, Plus } from 'lucide-react';
-import { CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '../components/ui/Input';
-import { Label } from '../components/ui/Label';
+import { CardHeader, CardTitle, CardContent } from './ui/Card';
+import { Button } from './ui/Button';
+import { Input } from './ui/Input';
+import { Label } from './ui/Label';
 
 export default function ModalNovaTransacao({
   showModal,

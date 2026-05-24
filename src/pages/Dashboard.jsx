@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Users, Trophy, Target, Wallet, Activity, Heart, CheckCircle } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';

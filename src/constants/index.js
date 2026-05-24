@@ -1,4 +1,4 @@
-import { UserPlus, Activity, BookOpen, Briefcase, Heart, CheckCircle, Trash2, Plus, Users, Target, Calendar, Trophy, ChevronRight, DollarSign, Wallet, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Activity, BookOpen, Briefcase, Heart, Target, DollarSign } from 'lucide-react';
 
 export const PILARES = [
   { id: 'mental', nome: 'Mental', icon: BookOpen, color: 'bg-blue-100 text-blue-700' },

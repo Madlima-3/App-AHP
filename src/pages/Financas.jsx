@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Wallet, ArrowUpRight, ArrowDownRight, Plus, TrendingUp, Trash2, PieChart, ChevronLeft, ChevronRight, Calendar, Edit2, Check, X, Clock } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import ModalNovaTransacao from '../components/ModalNovaTransacao';
@@ -160,9 +160,10 @@ export default function Financas({
 
       {/* Botão de novo lançamento (menu superior) */}
       <section className="flex justify-end mb-4">
+        {console.log("Renderizando botão Novo Lançamento na página Finanças")}
         <Button variant="default" className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={() => setShowModal(true)}>
-  <Plus className="mr-1" size={16} /> Novo Lançamento
-</Button>
+          <Plus className="mr-1" size={16} /> Novo Lançamento
+        </Button>
    
    
    
