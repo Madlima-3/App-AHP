@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Wallet, ArrowUpRight, ArrowDownRight, Plus, TrendingUp, Trash2, PieChart, ChevronLeft, ChevronRight, Calendar, Edit2, Check, X, Clock } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 
@@ -22,7 +22,7 @@ export default function Financas({
   const [novoLimiteOrcamento, setNovoLimiteOrcamento] = useState('');
   
   // Estados para edição de orçamento
-  const [orcamentoEmEdicao, setOrcamentoEmEdicao] = useState(null);
+  const [orcamentoEmEdicaoObj, setOrcamentoEmEdicaoObj] = useState(null);
   const [editCategoria, setEditCategoria] = useState('');
   const [editLimitePadrao, setEditLimitePadrao] = useState('');
   const [editLimiteMensal, setEditLimiteMensal] = useState('');
@@ -114,15 +114,15 @@ export default function Financas({
   };
 
   const iniciarEdicao = (orc) => {
-    setOrcamentoEmEdicao(orc);
+    setOrcamentoEmEdicaoObj(orc);
     setEditCategoria(orc.categoria);
     setEditLimitePadrao(orc.limite);
-    const mesAnoStr = mesFiltro.toISOString().substring(0, 7);
+    const mesAnoStr = `${mesFiltro.getFullYear()}-${String(mesFiltro.getMonth() + 1).padStart(2, '0')}`;
     setEditLimiteMensal((orc.limitesMensais && orc.limitesMensais[mesAnoStr]) ? orc.limitesMensais[mesAnoStr] : '');
   };
 
   const cancelarEdicao = () => {
-    setOrcamentoEmEdicao(null);
+    setOrcamentoEmEdicaoObj(null);
     setEditCategoria('');
     setEditLimitePadrao('');
     setEditLimiteMensal('');
@@ -130,8 +130,8 @@ export default function Financas({
 
   const handleSalvarEdicao = () => {
     if (!editCategoria || !editLimitePadrao) return;
-    const mesAnoStr = mesFiltro.toISOString().substring(0, 7);
-    editarOrcamento(orcamentoEmEdicao, editCategoria, editLimitePadrao, editLimiteMensal, mesAnoStr);
+    const mesAnoStr = `${mesFiltro.getFullYear()}-${String(mesFiltro.getMonth() + 1).padStart(2, '0')}`;
+    editarOrcamento(orcamentoEmEdicaoObj, editCategoria, editLimitePadrao, editLimiteMensal, mesAnoStr);
     cancelarEdicao();
   };
 
@@ -156,6 +156,20 @@ export default function Financas({
           </Button>
         </div>
       </div>
+
+      {/* Botão de novo lançamento (menu superior) */}
+      <section className="flex justify-end mb-4">
+        <Button variant="default" className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={() => setShowModal(true)}>
+  <Plus className="mr-1" size={16} /> Novo Lançamento
+</Button>
+   
+   
+   
+
+   
+   
+
+      </section>
 
       {/* Resumo Financeiro */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -253,13 +267,13 @@ export default function Financas({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {orcamentos.map(orc => {
-                  const mesAnoStr = mesFiltro.toISOString().substring(0, 7);
+                  const mesAnoStr = `${mesFiltro.getFullYear()}-${String(mesFiltro.getMonth() + 1).padStart(2, '0')}`;
                   const limiteAtual = (orc.limitesMensais && orc.limitesMensais[mesAnoStr] !== undefined) 
                     ? orc.limitesMensais[mesAnoStr] 
                     : orc.limite;
 
                   const gasto = gastosPorCategoria[orc.categoria] || 0;
-                  const percentual = (gasto / limiteAtual) * 100;
+                  const percentual = limiteAtual ? (gasto / limiteAtual) * 100 : 0;
                   const percentualLimitado = Math.min(percentual, 100);
                   
                   let barColor = 'bg-emerald-500';
@@ -270,7 +284,7 @@ export default function Financas({
                   if (percentual > 100) textColor = 'text-rose-600';
                   else if (percentual >= 80) textColor = 'text-amber-600';
 
-                  const isEditing = orcamentoEmEdicao && orcamentoEmEdicao.categoria === orc.categoria;
+                  const isEditing = orcamentoEmEdicaoObj && orcamentoEmEdicaoObj.categoria === orc.categoria;
 
                   return (
                     <div key={orc.categoria} className="bg-slate-50 p-4 rounded-xl border border-slate-100 group relative">
@@ -365,22 +379,9 @@ export default function Financas({
                 })}
               </div>
             )}
-          </div>
-        </CardContent>
-
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="flex justify-end mt-4">
-          <Button
-            variant="default"
-            onClick={() => setShowModal(true)}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
-          >
-            <Plus className="mr-1" size={20} />
-            Adicionar lançamento
-          </Button>
-        </div>
-
+            </div>
+          </CardContent>
+        </Card>
         {showModal && (
           <div
             className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
@@ -562,11 +563,7 @@ export default function Financas({
             </div>
           </div>
         )}
-      </div>
 
-
-          
-        
 
         {/* Histórico */}
         <Card className="lg:col-span-2 shadow-sm border-slate-200">
@@ -765,7 +762,6 @@ export default function Financas({
             </div>
           </CardContent>
         </Card>
-      </div>
     </div>
   );
 }
