@@ -367,7 +367,7 @@ export default function Financas({
             )}
           </div>
         </CardContent>
-      </Card>
+
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="flex justify-end mt-4">
@@ -565,8 +565,8 @@ export default function Financas({
       </div>
 
 
-          </CardContent>
-        </Card>
+          
+        
 
         {/* Histórico */}
         <Card className="lg:col-span-2 shadow-sm border-slate-200">
