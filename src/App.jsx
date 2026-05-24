@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
-import { Activity, Heart, Users, Target, Wallet, ChevronRight } from 'lucide-react';
+import { Activity, Heart, Users, Target, Wallet, ChevronRight, FileText } from 'lucide-react';
 import { PILARES } from './constants';
 import { db } from './lib/firebase';
 import { collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, setDoc, writeBatch, where, getDocs } from 'firebase/firestore';
@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Membros from './pages/Membros';
 import Metas from './pages/Metas';
 import Financas from './pages/Financas';
+import Relatorios from './pages/Relatorios';
 
 export default function VolverFamiliaApp() {
   const [membros, setMembros] = useState([]);
@@ -364,6 +365,13 @@ export default function VolverFamiliaApp() {
               <div className="flex items-center"><Wallet className="mr-3" size={20} /> Paz Financeira</div>
               {abaAtiva === 'financas' && <ChevronRight size={16} />}
             </button>
+            <button 
+              onClick={() => setAbaAtiva('relatorios')}
+              className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${abaAtiva === 'relatorios' ? 'bg-indigo-100 text-indigo-700 font-semibold shadow-sm' : 'hover:bg-slate-200 text-slate-600'}`}
+            >
+              <div className="flex items-center"><FileText className="mr-3" size={20} /> Relatórios</div>
+              {abaAtiva === 'relatorios' && <ChevronRight size={16} />}
+            </button>
 
             <div className="mt-8 pt-6 border-t border-slate-200">
               <h3 className="px-4 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Filtrar Metas</h3>
@@ -436,6 +444,14 @@ export default function VolverFamiliaApp() {
               editarTransacao={editarTransacao}
             />
           )}
+          {abaAtiva === 'relatorios' && (
+            <Relatorios 
+              financas={financas} 
+              orcamentos={orcamentos}
+              alternarTransacaoStatus={alternarTransacaoStatus}
+              removerTransacao={removerTransacao}
+            />
+          )}
         </main>
 
       </div>
@@ -469,6 +485,13 @@ export default function VolverFamiliaApp() {
         >
           <Wallet size={24} className="mb-1" />
           <span className="text-[10px] font-medium">Finanças</span>
+        </button>
+        <button 
+          onClick={() => setAbaAtiva('relatorios')} 
+          className={`flex flex-col items-center p-2 min-w-[64px] transition-colors ${abaAtiva === 'relatorios' ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600'}`}
+        >
+          <FileText size={24} className="mb-1" />
+          <span className="text-[10px] font-medium">Relatórios</span>
         </button>
       </nav>
     </div>
