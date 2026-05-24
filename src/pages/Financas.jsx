@@ -38,6 +38,7 @@ export default function Financas({
   const [editTransData, setEditTransData] = useState('');
   const [editTransTipo, setEditTransTipo] = useState('');
   const [editTransEfetuado, setEditTransEfetuado] = useState(true);
+  const [showModal, setShowModal] = useState(false);
 
   const iniciarEdicaoTransacao = (trans) => {
     setTransacaoEmEdicao(trans.id);
@@ -369,143 +370,201 @@ export default function Financas({
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Nova Transação */}
-        <Card className="lg:col-span-1 shadow-sm border-slate-200 h-fit">
-          <CardHeader className="bg-slate-50 border-b border-slate-100">
-            <CardTitle className="text-lg text-slate-700 flex items-center">
-              <Plus className="mr-2" size={20} />
-              Nova Transação
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <form onSubmit={adicionarTransacao} className="space-y-4">
-              <div className="space-y-2">
-                <Label>Tipo</Label>
-                <div className="flex gap-2">
-                  <Button 
-                    type="button"
-                    variant={novaTransacao.tipo === 'despesa' ? 'default' : 'outline'}
-                    className={`flex-1 ${novaTransacao.tipo === 'despesa' ? 'bg-rose-600 hover:bg-rose-700' : ''}`}
-                    onClick={() => setNovaTransacao({...novaTransacao, tipo: 'despesa'})}
-                  >
-                    Despesa
-                  </Button>
-                  <Button 
-                    type="button"
-                    variant={novaTransacao.tipo === 'receita' ? 'default' : 'outline'}
-                    className={`flex-1 ${novaTransacao.tipo === 'receita' ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
-                    onClick={() => setNovaTransacao({...novaTransacao, tipo: 'receita'})}
-                  >
-                    Receita
-                  </Button>
-                </div>
-              </div>
+        <div className="flex justify-end mt-4">
+          <Button
+            variant="default"
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            <Plus className="mr-1" size={20} />
+            Adicionar lançamento
+          </Button>
+        </div>
 
-              <div className="space-y-2">
-                <Label>Status do Lançamento</Label>
-                <div className="flex gap-2">
-                  <Button 
-                    type="button"
-                    variant={novaTransacao.efetuado !== false ? 'default' : 'outline'}
-                    className={`flex-1 text-xs ${novaTransacao.efetuado !== false ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
-                    onClick={() => setNovaTransacao({...novaTransacao, efetuado: true})}
-                  >
-                    Efetivado (Pago/Rec.)
-                  </Button>
-                  <Button 
-                    type="button"
-                    variant={novaTransacao.efetuado === false ? 'default' : 'outline'}
-                    className={`flex-1 text-xs ${novaTransacao.efetuado === false ? 'bg-amber-600 hover:bg-amber-700' : ''}`}
-                    onClick={() => setNovaTransacao({...novaTransacao, efetuado: false})}
-                  >
-                    Pendente (Agendado)
-                  </Button>
-                </div>
-              </div>
+        {showModal && (
+          <div
+            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+            onClick={() => setShowModal(false)}
+          >
+            <div
+              className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative"
+              onClick={e => e.stopPropagation()}
+            >
+              <button
+                className="absolute top-2 right-2 text-slate-500 hover:text-slate-700"
+                onClick={() => setShowModal(false)}
+              >
+                <X size={20} />
+              </button>
+              <CardHeader className="bg-slate-50 border-b border-slate-100">
+                <CardTitle className="text-lg text-slate-700 flex items-center">
+                  <Plus className="mr-2" size={20} />
+                  Novo Lançamento
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <form onSubmit={adicionarTransacao} className="space-y-4">
+                  {/* Tipo */}
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant={novaTransacao.tipo === 'despesa' ? 'default' : 'outline'}
+                      className={`flex-1 ${novaTransacao.tipo === 'despesa' ? 'bg-rose-600 hover:bg-rose-700' : ''}`}
+                      onClick={() => setNovaTransacao({ ...novaTransacao, tipo: 'despesa' })}
+                    >
+                      Despesa
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={novaTransacao.tipo === 'receita' ? 'default' : 'outline'}
+                      className={`flex-1 ${novaTransacao.tipo === 'receita' ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
+                      onClick={() => setNovaTransacao({ ...novaTransacao, tipo: 'receita' })}
+                    >
+                      Receita
+                    </Button>
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="descTransacao">Descrição</Label>
-                <Input 
-                  id="descTransacao" 
-                  placeholder="Ex: Supermercado" 
-                  value={novaTransacao.descricao}
-                  onChange={e => setNovaTransacao({...novaTransacao, descricao: e.target.value})}
-                />
-              </div>
+                  {/* Status */}
+                  <div className="space-y-2">
+                    <Label>Status do Lançamento</Label>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant={novaTransacao.efetuado !== false ? 'default' : 'outline'}
+                        className={`flex-1 text-xs ${novaTransacao.efetuado !== false ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
+                        onClick={() => setNovaTransacao({ ...novaTransacao, efetuado: true })}
+                      >
+                        Efetivado (Pago/Rec.)
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={novaTransacao.efetuado === false ? 'default' : 'outline'}
+                        className={`flex-1 text-xs ${novaTransacao.efetuado === false ? 'bg-amber-600 hover:bg-amber-700' : ''}`}
+                        onClick={() => setNovaTransacao({ ...novaTransacao, efetuado: false })}
+                      >
+                        Pendente (Agendado)
+                      </Button>
+                    </div>
+                  </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="valorTransacao">
-                  {novaTransacao.repeticao === 'parcelada' ? 'Valor Total da Compra (R$)' : 'Valor (R$)'}
-                </Label>
-                <Input 
-                  id="valorTransacao" 
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00" 
-                  value={novaTransacao.valor}
-                  onChange={e => setNovaTransacao({...novaTransacao, valor: e.target.value})}
-                />
-              </div>
+                  {/* Descrição */}
+                  <div className="space-y-2">
+                    <Label htmlFor="descTransacao">Descrição</Label>
+                    <Input
+                      id="descTransacao"
+                      placeholder="Ex: Supermercado"
+                      value={novaTransacao.descricao}
+                      onChange={e => setNovaTransacao({ ...novaTransacao, descricao: e.target.value })}
+                    />
+                  </div>
 
-              <div className="space-y-2">
-                <Label>Repetição</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  <Button type="button" variant={(novaTransacao.repeticao || 'unica') === 'unica' ? 'default' : 'outline'} className={`text-xs ${(novaTransacao.repeticao || 'unica') === 'unica' ? 'bg-slate-800' : ''}`} onClick={() => setNovaTransacao({...novaTransacao, repeticao: 'unica', quantidadeMeses: ''})}>Única</Button>
-                  <Button type="button" variant={novaTransacao.repeticao === 'parcelada' ? 'default' : 'outline'} className={`text-xs ${novaTransacao.repeticao === 'parcelada' ? 'bg-slate-800' : ''}`} onClick={() => setNovaTransacao({...novaTransacao, repeticao: 'parcelada', quantidadeMeses: '2'})}>Parcelada</Button>
-                  <Button type="button" variant={novaTransacao.repeticao === 'fixa' ? 'default' : 'outline'} className={`text-xs ${novaTransacao.repeticao === 'fixa' ? 'bg-slate-800' : ''}`} onClick={() => setNovaTransacao({...novaTransacao, repeticao: 'fixa', quantidadeMeses: '12'})}>Fixa</Button>
-                </div>
-              </div>
+                  {/* Valor */}
+                  <div className="space-y-2">
+                    <Label htmlFor="valorTransacao">
+                      {novaTransacao.repeticao === 'parcelada' ? 'Valor Total da Compra (R$)' : 'Valor (R$)'}
+                    </Label>
+                    <Input
+                      id="valorTransacao"
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="0.00"
+                      value={novaTransacao.valor}
+                      onChange={e => setNovaTransacao({ ...novaTransacao, valor: e.target.value })}
+                    />
+                  </div>
 
-              {novaTransacao.repeticao !== 'unica' && novaTransacao.repeticao !== undefined && (
-                <div className="space-y-2">
-                  <Label htmlFor="qtdMeses">{novaTransacao.repeticao === 'parcelada' ? 'Número de Parcelas' : 'Repetir por Quantos Meses?'}</Label>
-                  <Input 
-                    id="qtdMeses" 
-                    type="number"
-                    min="2"
-                    max="120"
-                    value={novaTransacao.quantidadeMeses}
-                    onChange={e => setNovaTransacao({...novaTransacao, quantidadeMeses: e.target.value})}
-                  />
-                  {novaTransacao.repeticao === 'parcelada' && novaTransacao.quantidadeMeses && novaTransacao.valor && (
-                    <p className="text-xs text-slate-500 text-right mt-1">
-                      Serão {novaTransacao.quantidadeMeses} parcelas de R$ {(parseFloat(novaTransacao.valor) / parseInt(novaTransacao.quantidadeMeses)).toFixed(2)}
-                    </p>
+                  {/* Repetição */}
+                  <div className="space-y-2">
+                    <Label>Repetição</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button
+                        type="button"
+                        variant={(novaTransacao.repeticao || 'unica') === 'unica' ? 'default' : 'outline'}
+                        className={`text-xs ${(novaTransacao.repeticao || 'unica') === 'unica' ? 'bg-slate-800' : ''}`}
+                        onClick={() => setNovaTransacao({ ...novaTransacao, repeticao: 'unica', quantidadeMeses: '' })}
+                      >
+                        Única
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={novaTransacao.repeticao === 'parcelada' ? 'default' : 'outline'}
+                        className={`text-xs ${novaTransacao.repeticao === 'parcelada' ? 'bg-slate-800' : ''}`}
+                        onClick={() => setNovaTransacao({ ...novaTransacao, repeticao: 'parcelada', quantidadeMeses: '2' })}
+                      >
+                        Parcelada
+                      </Button>
+                      <Button
+                        type="button"
+                        variant={novaTransacao.repeticao === 'fixa' ? 'default' : 'outline'}
+                        className={`text-xs ${novaTransacao.repeticao === 'fixa' ? 'bg-slate-800' : ''}`}
+                        onClick={() => setNovaTransacao({ ...novaTransacao, repeticao: 'fixa', quantidadeMeses: '12' })}
+                      >
+                        Fixa
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Quantidade meses */}
+                  {novaTransacao.repeticao !== 'unica' && novaTransacao.repeticao !== undefined && (
+                    <div className="space-y-2">
+                      <Label htmlFor="qtdMeses">
+                        {novaTransacao.repeticao === 'parcelada' ? 'Número de Parcelas' : 'Repetir por Quantos Meses?'}
+                      </Label>
+                      <Input
+                        id="qtdMeses"
+                        type="number"
+                        min="2"
+                        max="120"
+                        value={novaTransacao.quantidadeMeses}
+                        onChange={e => setNovaTransacao({ ...novaTransacao, quantidadeMeses: e.target.value })}
+                      />
+                      {novaTransacao.repeticao === 'parcelada' && novaTransacao.quantidadeMeses && novaTransacao.valor && (
+                        <p className="text-xs text-slate-500 text-right mt-1">
+                          Serão {novaTransacao.quantidadeMeses} parcelas de R${(parseFloat(novaTransacao.valor) / parseInt(novaTransacao.quantidadeMeses)).toFixed(2)}
+                        </p>
+                      )}
+                    </div>
                   )}
-                </div>
-              )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="catTransacao">Categoria</Label>
-                  <select 
-                    id="catTransacao" 
-                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    value={novaTransacao.categoria}
-                    onChange={e => setNovaTransacao({...novaTransacao, categoria: e.target.value})}
-                  >
-                    <option value="Sem categoria">Sem categoria</option>
-                    {orcamentos.map(orc => (
-                      <option key={orc.categoria} value={orc.categoria}>{orc.categoria}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="dataTransacao">Data</Label>
-                  <Input 
-                    id="dataTransacao" 
-                    type="date"
-                    value={novaTransacao.data}
-                    onChange={e => setNovaTransacao({...novaTransacao, data: e.target.value})}
-                  />
-                </div>
-              </div>
+                  {/* Categoria & Data */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="catTransacao">Categoria</Label>
+                      <select
+                        id="catTransacao"
+                        className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                        value={novaTransacao.categoria}
+                        onChange={e => setNovaTransacao({ ...novaTransacao, categoria: e.target.value })}
+                      >
+                        <option value="Sem categoria">Sem categoria</option>
+                        {orcamentos.map(orc => (
+                          <option key={orc.categoria} value={orc.categoria}>{orc.categoria}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="dataTransacao">Data</Label>
+                      <Input
+                        id="dataTransacao"
+                        type="date"
+                        value={novaTransacao.data}
+                        onChange={e => setNovaTransacao({ ...novaTransacao, data: e.target.value })}
+                      />
+                    </div>
+                  </div>
 
-              <Button type="submit" className="w-full bg-slate-800 hover:bg-slate-900 mt-2">
-                Registrar {novaTransacao.tipo === 'receita' ? 'Receita' : 'Despesa'}
-              </Button>
-            </form>
+                  <Button type="submit" className="w-full bg-slate-800 hover:bg-slate-900 mt-2">
+                    Registrar {novaTransacao.tipo === 'receita' ? 'Receita' : 'Despesa'}
+                  </Button>
+                </form>
+              </CardContent>
+            </div>
+          </div>
+        )}
+      </div>
+
+
           </CardContent>
         </Card>
 
@@ -523,7 +582,7 @@ export default function Financas({
                 const isEditingTrans = transacaoEmEdicao === transacao.id;
                 
                 return isEditingTrans ? (
-                  <div key={transacao.id} className="p-4 bg-slate-50 border-l-4 border-l-indigo-500 space-y-4 animate-in fade-in duration-200">
+                  <div key={transacao.id} className="p-4 bg-slate-50 border-l-4 border-l-indigo-500 space-y-4 animate-in fade-in duration-200 flex flex-col">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <Label className="text-xs font-semibold text-slate-500">Descrição</Label>
@@ -534,17 +593,17 @@ export default function Financas({
                           className="h-8 text-sm" 
                         />
                       </div>
-                      <div className="space-y-1">
-                        <Label className="text-xs font-semibold text-slate-500">Valor (R$)</Label>
-                        <Input 
-                          type="number" 
-                          step="0.01" 
-                          value={editTransValor} 
-                          onChange={e => setEditTransValor(e.target.value)} 
-                          placeholder="0.00" 
-                          className="h-8 text-sm" 
-                        />
-                      </div>
+                      <div className="space-y-1 w-full md:w-32">
+                         <Label className="text-xs font-semibold text-slate-500">Valor (R$)</Label>
+                         <Input 
+                           type="number" 
+                           step="0.01" 
+                           value={editTransValor} 
+                           onChange={e => setEditTransValor(e.target.value)} 
+                           placeholder="0.00" 
+                           className="h-8 text-sm" 
+                         />
+                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -619,13 +678,13 @@ export default function Financas({
                 ) : (
                   <div 
                     key={transacao.id} 
-                    className={`p-4 flex items-center justify-between hover:bg-slate-50 transition-colors ${
+                    className={`p-4 flex items-center hover:bg-slate-50 transition-colors ${
                       transacao.efetuado === false 
                         ? 'bg-slate-50/40 opacity-85 border-l-4 border-l-amber-500' 
                         : ''
                     }`}
                   >
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-4 flex-1">
                       <button
                         onClick={() => alternarTransacaoStatus(transacao.id)}
                         className={`p-2 rounded-full transition-all relative group cursor-pointer ${
@@ -650,43 +709,47 @@ export default function Financas({
                         </span>
                       </button>
 
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2">
-                          <p className={`font-medium ${transacao.efetuado === false ? 'text-slate-500' : 'text-slate-800'}`}>
+                          <p className={`font-medium text-xs truncate ${transacao.efetuado === false ? 'text-slate-500' : 'text-slate-800'}`}>
                             {transacao.descricao}
                           </p>
                           {transacao.efetuado === false && (
-                            <span className="text-[10px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full">
+                            <span className="text-[10px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full shrink-0">
                               Agendado
                             </span>
                           )}
                         </div>
-                        <div className="flex space-x-2 text-xs text-slate-500 mt-1">
-                          <span className="bg-slate-100 px-2 py-0.5 rounded">{transacao.categoria}</span>
-                          <span>{new Date(transacao.data).toLocaleDateString()}</span>
+                        <div className="flex flex-col md:flex-row md:space-x-2 text-xs text-slate-500 mt-1">
+                          <span className="bg-slate-100 px-2 py-0.5 rounded truncate max-w-[120px] text-xs">{transacao.categoria}</span>
+                          <span className="block md:hidden text-xs mt-1">{new Date(transacao.data).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 sm:space-x-4">
-                      <span className={`font-bold text-sm sm:text-base ${transacao.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    
+                    <div className="flex flex-col items-end shrink-0 pl-4">
+                      <div className="hidden md:flex text-xs text-slate-500 mb-1 items-center">
+                        <Calendar size={10} className="mr-1" /> {new Date(transacao.data).toLocaleDateString()}
+                      </div>
+                      <span className={`font-bold text-xs sm:text-sm ${transacao.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600'}`} style={{ minWidth: '80px', textAlign: 'right' }}>
                         {transacao.tipo === 'receita' ? '+' : '-'} R$ {transacao.valor.toFixed(2)}
                       </span>
-                      <div className="flex items-center space-x-1">
+                      <div className="flex items-center space-x-1 mt-1">
                         <Button 
                           variant="ghost" 
                           size="icon" 
-                          className="h-8 w-8 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50" 
+                          className="h-7 w-7 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50" 
                           onClick={() => iniciarEdicaoTransacao(transacao)}
                         >
-                          <Edit2 size={16} />
+                          <Edit2 size={14} />
                         </Button>
                         <Button 
                           variant="ghost" 
                           size="icon" 
-                          className="h-8 w-8 text-slate-300 hover:text-red-500 hover:bg-red-50" 
+                          className="h-7 w-7 text-slate-300 hover:text-red-500 hover:bg-red-50" 
                           onClick={() => removerTransacao(transacao.id)}
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={14} />
                         </Button>
                       </div>
                     </div>

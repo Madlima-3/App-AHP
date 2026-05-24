@@ -354,12 +354,12 @@ export default function Relatorios({
                       }`}
                     >
                       {/* Data */}
-                      <td className="p-4 font-medium whitespace-nowrap text-slate-600 text-xs">
-                        <span className="flex items-center">
-                          <Calendar size={12} className="mr-1.5 text-slate-400" />
-                          {dataFormatada}
-                        </span>
-                      </td>
+                      <td className="p-4 font-medium whitespace-nowrap text-slate-600 text-xs hidden md:table-cell">
+                          <span className="flex items-center">
+                            <Calendar size={12} className="mr-1.5 text-slate-400" />
+                            {dataFormatada}
+                          </span>
+                        </td>
 
                       {/* Tipo */}
                       <td className="p-4">
@@ -371,7 +371,7 @@ export default function Relatorios({
                       </td>
 
                       {/* Descrição */}
-                      <td className="p-4 font-medium text-slate-800">
+                      <td className="p-4 font-medium text-slate-800 text-xs">
                         {t.descricao}
                       </td>
 
@@ -399,24 +399,28 @@ export default function Relatorios({
                       </td>
 
                       {/* Valor */}
-                      <td className={`p-4 text-right font-bold text-sm ${
-                        t.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600'
-                      }`}>
-                        {t.tipo === 'receita' ? '+' : '-'} R$ {t.valor.toFixed(2)}
-                      </td>
+                      <td className={`p-4 text-right font-bold text-xs sm:text-sm ${
+                          t.tipo === 'receita' ? 'text-emerald-600' : 'text-rose-600'
+                        }`}>
+                          {/* Date for mobile */}
+                          <div className="block md:hidden text-xs text-slate-600 flex items-center justify-center mb-1">
+                            <Calendar size={12} className="mr-1.5" /> {dataFormatada}
+                          </div>
+                          <span>{t.tipo === 'receita' ? '+' : '-'} R$ {t.valor.toFixed(2)}</span>
+                        </td>
 
                       {/* Ações */}
-                      <td className="p-4 text-center">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8 text-slate-300 hover:text-red-500 hover:bg-red-50"
-                          onClick={() => removerTransacao(t.id)}
-                          title="Excluir lançamento"
-                        >
-                          <Trash2 size={15} />
-                        </Button>
-                      </td>
+                      <td className="p-4 text-center w-12">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-7 w-7 text-slate-300 hover:text-red-500 hover:bg-red-50"
+                            onClick={() => removerTransacao(t.id)}
+                            title="Excluir lançamento"
+                          >
+                            <Trash2 size={14} />
+                          </Button>
+                        </td>
                     </tr>
                   );
                 })}
