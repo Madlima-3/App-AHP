@@ -512,7 +512,7 @@ export default function Financas({
 
                     <div>
                       <div className="flex items-center space-x-2">
-                        <p className={`font-medium ${transacao.efetuado === false ? 'text-slate-500 line-through decoration-dotted decoration-amber-500' : 'text-slate-800'}`}>
+                        <p className={`font-medium ${transacao.efetuado === false ? 'text-slate-500' : 'text-slate-800'}`}>
                           {transacao.descricao}
                         </p>
                         {transacao.efetuado === false && (
