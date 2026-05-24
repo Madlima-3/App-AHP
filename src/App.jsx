@@ -212,6 +212,17 @@ export default function VolverFamiliaApp() {
     }
   };
 
+  const editarTransacao = async (id, dadosAtualizados) => {
+    try {
+      await updateDoc(doc(db, 'transacoes', id), {
+        ...dadosAtualizados,
+        valor: parseFloat(dadosAtualizados.valor)
+      });
+    } catch (error) {
+      console.error("Erro ao editar transação:", error);
+    }
+  };
+
   const salvarOrcamento = async (categoria, limite) => {
     try {
       await setDoc(doc(db, 'orcamentos', categoria), { 
@@ -422,6 +433,7 @@ export default function VolverFamiliaApp() {
               editarOrcamento={editarOrcamento}
               removerOrcamento={removerOrcamento}
               alternarTransacaoStatus={alternarTransacaoStatus}
+              editarTransacao={editarTransacao}
             />
           )}
         </main>
