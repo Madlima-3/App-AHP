@@ -5,6 +5,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import ModalNovaTransacao from '../components/ModalNovaTransacao';
+import ModalNovaConta from '../components/ModalNovaConta';
 
 export default function Financas({ 
   financas, 
@@ -17,7 +18,10 @@ export default function Financas({
   editarOrcamento,
   removerOrcamento,
   alternarTransacaoStatus,
-  editarTransacao
+  editarTransacao,
+  contas = [],
+  adicionarConta,
+  removerConta
 }) {
   const [novaCategoriaOrcamento, setNovaCategoriaOrcamento] = useState('');
   const [novoLimiteOrcamento, setNovoLimiteOrcamento] = useState('');
@@ -40,6 +44,7 @@ export default function Financas({
   const [editTransTipo, setEditTransTipo] = useState('');
   const [editTransEfetuado, setEditTransEfetuado] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [showContaModal, setShowContaModal] = useState(false);
 
   const iniciarEdicaoTransacao = (trans) => {
     setTransacaoEmEdicao(trans.id);
@@ -171,6 +176,58 @@ export default function Financas({
    
    
 
+      </section>
+
+      {/* Minhas Contas */}
+      <section className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-bold text-slate-800 flex items-center">
+            <Wallet className="mr-2 text-indigo-600" size={20} /> Minhas Contas
+          </h3>
+          <Button variant="outline" size="sm" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => setShowContaModal(true)}>
+            <Plus size={14} className="mr-1" /> Nova Conta
+          </Button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          {contas.length === 0 && (
+            <div className="col-span-full p-4 border border-dashed border-slate-300 rounded-xl text-center text-slate-500 text-sm">
+              Nenhuma conta cadastrada. Cadastre sua primeira conta!
+            </div>
+          )}
+          {contas.map(conta => {
+            const transacoesDaConta = financas.transacoes.filter(t => t.contaId === conta.id);
+            const saldoConta = transacoesDaConta.reduce((acc, curr) => {
+              const isEfetivado = curr.efetuado !== false;
+              if (!isEfetivado) return acc;
+              return curr.tipo === 'receita' ? acc + curr.valor : acc - curr.valor;
+            }, parseFloat(conta.saldoInicial) || 0);
+
+            return (
+              <Card key={conta.id} className="bg-white shadow-sm border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all">
+                <CardContent className="p-5 flex flex-col items-start">
+                  <div className="flex justify-between items-start w-full mb-2">
+                    <span className="text-sm font-semibold text-slate-600">{conta.nome}</span>
+                    <button 
+                      className="text-slate-300 hover:text-red-500 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if(window.confirm('Tem certeza que deseja excluir esta conta? O histórico não será perdido.')) {
+                          removerConta(conta.id);
+                        }
+                      }}
+                      title="Excluir Conta"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                  <h4 className={`text-xl font-bold ${saldoConta >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    R$ {saldoConta.toFixed(2)}
+                  </h4>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
       </section>
 
       {/* Resumo Financeiro */}
@@ -391,6 +448,13 @@ export default function Financas({
           setNovaTransacao={setNovaTransacao}
           adicionarTransacao={adicionarTransacao}
           orcamentos={orcamentos}
+          contas={contas}
+        />
+
+        <ModalNovaConta
+          showModal={showContaModal}
+          setShowModal={setShowContaModal}
+          adicionarConta={adicionarConta}
         />
 
 
@@ -536,15 +600,28 @@ export default function Financas({
                       </button>
 
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-2">
-                          <p className={`font-medium text-xs truncate ${transacao.efetuado === false ? 'text-slate-500' : 'text-slate-800'}`}>
-                            {transacao.descricao}
-                          </p>
+                        <div className="flex justify-between items-start mb-2">
+                          <div className="flex items-center space-x-2">
+                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${transacao.tipo === 'receita' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>
+                              {transacao.tipo === 'receita' ? 'Receita' : 'Despesa'}
+                            </span>
+                            {transacao.contaId && contas.find(c => c.id === transacao.contaId) && (
+                              <span className="px-2 py-1 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 flex items-center border border-slate-200">
+                                <Wallet size={10} className="mr-1" />
+                                {contas.find(c => c.id === transacao.contaId)?.nome}
+                              </span>
+                            )}
+                          </div>
                           {transacao.efetuado === false && (
                             <span className="text-[10px] font-semibold bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full shrink-0">
                               Agendado
                             </span>
                           )}
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <p className={`font-medium text-xs truncate ${transacao.efetuado === false ? 'text-slate-500' : 'text-slate-800'}`}>
+                            {transacao.descricao}
+                          </p>
                         </div>
                         <div className="flex flex-col md:flex-row md:space-x-2 text-xs text-slate-500 mt-1">
                           <span className="bg-slate-100 px-2 py-0.5 rounded truncate max-w-[120px] text-xs">{transacao.categoria}</span>

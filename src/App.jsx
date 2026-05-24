@@ -16,13 +16,14 @@ export default function VolverFamiliaApp() {
   const [metas, setMetas] = useState([]);
   const [financas, setFinancas] = useState({ saldo: 0, transacoes: [] });
   const [orcamentos, setOrcamentos] = useState([]);
+  const [contas, setContas] = useState([]);
 
   const [novoMembro, setNovoMembro] = useState({ nome: '', papel: '' });
   const [novaMeta, setNovaMeta] = useState({ 
     titulo: '', descricao: '', pilar: 'fisico', membroId: '', prazo: ''
   });
   const [novaTransacao, setNovaTransacao] = useState({
-    descricao: '', valor: '', tipo: 'despesa', categoria: 'Sem categoria', data: new Date().toISOString().split('T')[0], repeticao: 'unica', quantidadeMeses: '', efetuado: true
+    descricao: '', valor: '', tipo: 'despesa', categoria: 'Sem categoria', data: new Date().toISOString().split('T')[0], repeticao: 'unica', quantidadeMeses: '', efetuado: true, contaId: ''
   });
 
   const [abaAtiva, setAbaAtiva] = useState('dashboard');
@@ -76,12 +77,19 @@ export default function VolverFamiliaApp() {
       setOrcamentos(orcamentosData);
     });
 
+    // Escutar Contas
+    const unsubContas = onSnapshot(collection(db, 'contas'), (snapshot) => {
+      const contasData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setContas(contasData);
+    });
+
     // Limpar listeners ao desmontar o componente
     return () => {
       unsubMembros();
       unsubMetas();
       unsubTransacoes();
       unsubOrcamentos();
+      unsubContas();
     };
   }, []);
 
@@ -134,6 +142,30 @@ export default function VolverFamiliaApp() {
     }
   };
 
+  const adicionarConta = async (nome, saldoInicial) => {
+    try {
+      await addDoc(collection(db, 'contas'), { nome, saldoInicial: parseFloat(saldoInicial) || 0 });
+    } catch (error) {
+      console.error("Erro ao adicionar conta:", error);
+    }
+  };
+
+  const removerConta = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'contas', id));
+    } catch (error) {
+      console.error("Erro ao remover conta:", error);
+    }
+  };
+
+  const editarConta = async (id, nome, saldoInicial) => {
+    try {
+      await updateDoc(doc(db, 'contas', id), { nome, saldoInicial: parseFloat(saldoInicial) || 0 });
+    } catch (error) {
+      console.error("Erro ao editar conta:", error);
+    }
+  };
+
   const adicionarTransacao = async (e) => {
     e.preventDefault();
     if (!novaTransacao.descricao || !novaTransacao.valor) return;
@@ -172,7 +204,8 @@ export default function VolverFamiliaApp() {
           tipo: novaTransacao.tipo,
           categoria: novaTransacao.categoria,
           data: dataFormatada,
-          efetuado: transacaoEfetuada
+          efetuado: transacaoEfetuada,
+          contaId: novaTransacao.contaId || ''
         });
       }
 
@@ -186,7 +219,8 @@ export default function VolverFamiliaApp() {
         data: new Date().toISOString().split('T')[0],
         repeticao: 'unica',
         quantidadeMeses: '',
-        efetuado: true
+        efetuado: true,
+        contaId: novaTransacao.contaId || ''
       });
     } catch (error) {
       console.error("Erro ao adicionar transação:", error);
@@ -442,6 +476,10 @@ export default function VolverFamiliaApp() {
               removerOrcamento={removerOrcamento}
               alternarTransacaoStatus={alternarTransacaoStatus}
               editarTransacao={editarTransacao}
+              contas={contas}
+              adicionarConta={adicionarConta}
+              removerConta={removerConta}
+              editarConta={editarConta}
             />
           )}
           {abaAtiva === 'relatorios' && (

@@ -11,7 +11,8 @@ export default function ModalNovaTransacao({
   novaTransacao,
   setNovaTransacao,
   adicionarTransacao,
-  orcamentos
+  orcamentos,
+  contas
 }) {
   if (!showModal) return null;
 
@@ -68,8 +69,8 @@ export default function ModalNovaTransacao({
 
             {/* Status */}
             <div className="space-y-2">
-              <Label>Status do Lançamento</Label>
-              <div className="flex gap-2">
+              <Label htmlFor="statusTransacao">Status do Lançamento</Label>
+              <div id="statusTransacao" className="flex gap-2">
                 <Button
                   type="button"
                   variant={novaTransacao.efetuado ? 'default' : 'outline'}
@@ -87,6 +88,23 @@ export default function ModalNovaTransacao({
                   Pendente (Agendado)
                 </Button>
               </div>
+            </div>
+
+            {/* Conta */}
+            <div className="space-y-2">
+              <Label htmlFor="contaTransacao">Conta</Label>
+              <select
+                id="contaTransacao"
+                className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                value={novaTransacao.contaId || ''}
+                onChange={e => setNovaTransacao({ ...novaTransacao, contaId: e.target.value })}
+                required
+              >
+                <option value="" disabled>Selecione uma conta...</option>
+                {contas && contas.map(conta => (
+                  <option key={conta.id} value={conta.id}>{conta.nome}</option>
+                ))}
+              </select>
             </div>
 
             {/* Descrição */}
@@ -118,8 +136,8 @@ export default function ModalNovaTransacao({
 
             {/* Repetição */}
             <div className="space-y-2">
-              <Label>Repetição</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <Label htmlFor="repeticaoTransacao">Repetição</Label>
+              <div id="repeticaoTransacao" className="grid grid-cols-3 gap-2">
                 <Button
                   type="button"
                   variant={(novaTransacao.repeticao || 'unica') === 'unica' ? 'default' : 'outline'}
