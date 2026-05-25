@@ -210,20 +210,18 @@ export default function Financas({
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
-
       {/* Minhas Contas */}
-      <Card className="shadow-sm border-slate-200">
+      <Card className="shadow-sm border-slate-200 mb-8">
         <CardHeader className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between">
           <CardTitle className="text-lg text-slate-700 flex items-center">
             <Wallet className="mr-2" size={20} /> Minhas Contas
           </CardTitle>
-          <Button variant="outline" size="sm" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => setShowContaModal(true)}>
+          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md transition-colors flex items-center text-sm" onClick={() => setShowContaModal(true)}>
             <Plus size={14} className="mr-1" /> Nova Conta
           </Button>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {contas.length === 0 && (
             <div className="col-span-full p-4 border border-dashed border-slate-300 rounded-xl text-center text-slate-500 text-sm">
               Nenhuma conta cadastrada. Cadastre sua primeira conta!
@@ -266,16 +264,14 @@ export default function Financas({
         </CardContent>
       </Card>
 
-      </div>
-
       {/* Teto de Gastos / Orçamentos */}
-      <Card className="shadow-sm border-slate-200">
+      <Card className="shadow-sm border-slate-200 mb-8">
         <CardHeader className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between">
           <CardTitle className="text-lg text-slate-700 flex items-center">
             <PieChart className="mr-2" size={20} />
             Orçamentos por Categoria (Mês Atual)
           </CardTitle>
-          <Button variant="outline" size="sm" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => setShowOrcamentoModal(true)}>
+          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md transition-colors flex items-center text-sm" onClick={() => setShowOrcamentoModal(true)}>
             <Plus size={14} className="mr-1" /> Nova Categoria
           </Button>
         </CardHeader>
@@ -432,7 +428,7 @@ export default function Financas({
               <TrendingUp className="mr-2" size={20} />
               Histórico do Mês
             </CardTitle>
-            <Button variant="default" size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={() => setShowModal(true)}>
+            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md transition-colors flex items-center text-sm" onClick={() => setShowModal(true)}>
               <Plus size={14} className="mr-1" /> Novo Lançamento
             </Button>
           </CardHeader>
