@@ -22,8 +22,32 @@ export default function Financas({
   editarTransacao,
   contas = [],
   adicionarConta,
-  removerConta
+  removerConta,
+  editarConta
 }) {
+  // Estados para edição de conta
+  const [contaEmEdicao, setContaEmEdicao] = useState(null);
+  const [editContaNome, setEditContaNome] = useState('');
+  const [editContaSaldo, setEditContaSaldo] = useState('');
+
+  const iniciarEdicaoConta = (conta) => {
+    setContaEmEdicao(conta.id);
+    setEditContaNome(conta.nome);
+    setEditContaSaldo(conta.saldoInicial);
+  };
+
+  const cancelarEdicaoConta = () => {
+    setContaEmEdicao(null);
+    setEditContaNome('');
+    setEditContaSaldo('');
+  };
+
+  const handleSalvarEdicaoConta = (e) => {
+    e.preventDefault();
+    if (!editContaNome) return;
+    editarConta(contaEmEdicao, editContaNome, editContaSaldo);
+    cancelarEdicaoConta();
+  };
   // Estados para edição de orçamento
   const [orcamentoEmEdicaoObj, setOrcamentoEmEdicaoObj] = useState(null);
   const [editCategoria, setEditCategoria] = useState('');
@@ -216,7 +240,7 @@ export default function Financas({
           <CardTitle className="text-lg text-slate-700 flex items-center">
             <Wallet className="mr-2" size={20} /> Minhas Contas
           </CardTitle>
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md transition-colors flex items-center text-sm" onClick={() => setShowContaModal(true)}>
+          <Button className="h-10 px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex items-center justify-center transition-colors" onClick={() => setShowContaModal(true)}>
             <Plus size={14} className="mr-1" /> Nova Conta
           </Button>
         </CardHeader>
@@ -237,25 +261,70 @@ export default function Financas({
 
             return (
               <Card key={conta.id} className="bg-white shadow-sm border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all">
-                <CardContent className="p-5 flex flex-col items-start">
-                  <div className="flex justify-between items-start w-full mb-2">
-                    <span className="text-sm font-semibold text-slate-600">{conta.nome}</span>
-                    <button 
-                      className="text-slate-300 hover:text-red-500 transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if(window.confirm('Tem certeza que deseja excluir esta conta? O histórico não será perdido.')) {
-                          removerConta(conta.id);
-                        }
-                      }}
-                      title="Excluir Conta"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                  <h4 className={`text-xl font-bold ${saldoConta >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                    R$ {saldoConta.toFixed(2)}
-                  </h4>
+                <CardContent className="p-5 flex flex-col items-start w-full">
+                  {contaEmEdicao === conta.id ? (
+                    <div className="w-full space-y-3 animate-in fade-in duration-200">
+                      <div className="space-y-1">
+                        <Label className="text-xs font-semibold text-slate-500">Nome da Conta</Label>
+                        <Input 
+                          value={editContaNome}
+                          onChange={e => setEditContaNome(e.target.value)}
+                          placeholder="Nome"
+                          className="h-8 text-sm"
+                          autoFocus
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <Label className="text-xs font-semibold text-slate-500">Saldo Inicial (R$)</Label>
+                        <Input 
+                          type="number"
+                          step="0.01"
+                          value={editContaSaldo}
+                          onChange={e => setEditContaSaldo(e.target.value)}
+                          placeholder="0.00"
+                          className="h-8 text-sm"
+                        />
+                      </div>
+                      <div className="flex space-x-2 pt-1 justify-end">
+                        <Button size="icon" variant="outline" className="h-7 w-7 text-slate-500" onClick={cancelarEdicaoConta}>
+                          <X size={14} />
+                        </Button>
+                        <Button size="icon" className="h-7 w-7 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSalvarEdicaoConta}>
+                          <Check size={14} />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex justify-between items-start w-full mb-2 group">
+                        <span className="text-sm font-semibold text-slate-600 truncate mr-2">{conta.nome}</span>
+                        <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button 
+                            className="text-slate-300 hover:text-indigo-500 transition-colors p-1"
+                            onClick={(e) => { e.stopPropagation(); iniciarEdicaoConta(conta); }}
+                            title="Editar Conta"
+                          >
+                            <Edit2 size={14} />
+                          </button>
+                          <button 
+                            className="text-slate-300 hover:text-red-500 transition-colors p-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if(window.confirm('Tem certeza que deseja excluir esta conta? O histórico não será perdido.')) {
+                                removerConta(conta.id);
+                              }
+                            }}
+                            title="Excluir Conta"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </div>
+                      <h4 className={`text-xl font-bold ${saldoConta >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                        R$ {saldoConta.toFixed(2)}
+                      </h4>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             )
@@ -271,7 +340,7 @@ export default function Financas({
             <PieChart className="mr-2" size={20} />
             Orçamentos por Categoria (Mês Atual)
           </CardTitle>
-          <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md transition-colors flex items-center text-sm" onClick={() => setShowOrcamentoModal(true)}>
+          <Button className="h-10 px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex items-center justify-center transition-colors" onClick={() => setShowOrcamentoModal(true)}>
             <Plus size={14} className="mr-1" /> Nova Categoria
           </Button>
         </CardHeader>
@@ -428,7 +497,7 @@ export default function Financas({
               <TrendingUp className="mr-2" size={20} />
               Histórico do Mês
             </CardTitle>
-            <Button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-4 py-2 rounded-md transition-colors flex items-center text-sm" onClick={() => setShowModal(true)}>
+            <Button className="h-10 px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex items-center justify-center transition-colors" onClick={() => setShowModal(true)}>
               <Plus size={14} className="mr-1" /> Novo Lançamento
             </Button>
           </CardHeader>
