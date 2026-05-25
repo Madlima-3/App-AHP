@@ -6,6 +6,7 @@ import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import ModalNovaTransacao from '../components/ModalNovaTransacao';
 import ModalNovaConta from '../components/ModalNovaConta';
+import ModalNovoOrcamento from '../components/ModalNovoOrcamento';
 
 export default function Financas({ 
   financas, 
@@ -23,9 +24,6 @@ export default function Financas({
   adicionarConta,
   removerConta
 }) {
-  const [novaCategoriaOrcamento, setNovaCategoriaOrcamento] = useState('');
-  const [novoLimiteOrcamento, setNovoLimiteOrcamento] = useState('');
-  
   // Estados para edição de orçamento
   const [orcamentoEmEdicaoObj, setOrcamentoEmEdicaoObj] = useState(null);
   const [editCategoria, setEditCategoria] = useState('');
@@ -45,6 +43,7 @@ export default function Financas({
   const [editTransEfetuado, setEditTransEfetuado] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [showContaModal, setShowContaModal] = useState(false);
+  const [showOrcamentoModal, setShowOrcamentoModal] = useState(false);
 
   const iniciarEdicaoTransacao = (trans) => {
     setTransacaoEmEdicao(trans.id);
@@ -111,13 +110,7 @@ export default function Financas({
       return acc;
     }, {});
 
-  const handleSalvarOrcamento = (e) => {
-    e.preventDefault();
-    if (!novaCategoriaOrcamento || !novoLimiteOrcamento) return;
-    salvarOrcamento(novaCategoriaOrcamento, novoLimiteOrcamento);
-    setNovaCategoriaOrcamento('');
-    setNovoLimiteOrcamento('');
-  };
+
 
   const iniciarEdicao = (orc) => {
     setOrcamentoEmEdicaoObj(orc);
@@ -286,45 +279,22 @@ export default function Financas({
 
       {/* Teto de Gastos / Orçamentos */}
       <Card className="shadow-sm border-slate-200">
-        <CardHeader className="bg-slate-50 border-b border-slate-100">
+        <CardHeader className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between">
           <CardTitle className="text-lg text-slate-700 flex items-center">
             <PieChart className="mr-2" size={20} />
             Orçamentos por Categoria (Mês Atual)
           </CardTitle>
+          <Button variant="outline" size="sm" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => setShowOrcamentoModal(true)}>
+            <Plus size={14} className="mr-1" /> Nova Categoria
+          </Button>
         </CardHeader>
         <CardContent className="p-6">
-          <form onSubmit={handleSalvarOrcamento} className="flex flex-col sm:flex-row gap-4 items-end mb-6">
-            <div className="w-full sm:w-1/3 space-y-2">
-              <Label htmlFor="catOrcamento">Categoria</Label>
-              <Input 
-                id="catOrcamento" 
-                placeholder="Ex: Alimentação" 
-                value={novaCategoriaOrcamento}
-                onChange={e => setNovaCategoriaOrcamento(e.target.value)}
-              />
+          {orcamentos.length === 0 ? (
+            <div className="text-center p-8 border border-dashed border-slate-200 rounded-xl text-slate-500">
+              Nenhum limite definido. Adicione categorias para controlar seus gastos.
             </div>
-            <div className="w-full sm:w-1/3 space-y-2">
-              <Label htmlFor="limiteOrcamento">Limite (R$)</Label>
-              <Input 
-                id="limiteOrcamento" 
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.00" 
-                value={novoLimiteOrcamento}
-                onChange={e => setNovoLimiteOrcamento(e.target.value)}
-              />
-            </div>
-            <Button type="submit" className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700">
-              <Plus size={16} className="mr-2" /> Adicionar Limite
-            </Button>
-          </form>
-
-          <div className="space-y-4">
-            {orcamentos.length === 0 ? (
-              <p className="text-sm text-slate-500 text-center py-4">Nenhum orçamento definido ainda.</p>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
                 {orcamentos.map(orc => {
                   const mesAnoStr = `${mesFiltro.getFullYear()}-${String(mesFiltro.getMonth() + 1).padStart(2, '0')}`;
                   const limiteAtual = (orc.limitesMensais && orc.limitesMensais[mesAnoStr] !== undefined) 
@@ -438,7 +408,6 @@ export default function Financas({
                 })}
               </div>
             )}
-            </div>
           </CardContent>
         </Card>
         <ModalNovaTransacao 
@@ -456,6 +425,13 @@ export default function Financas({
           setShowModal={setShowContaModal}
           adicionarConta={adicionarConta}
         />
+
+        <ModalNovoOrcamento
+          showModal={showOrcamentoModal}
+          setShowModal={setShowOrcamentoModal}
+          salvarOrcamento={salvarOrcamento}
+        />
+
 
 
         {/* Histórico */}
