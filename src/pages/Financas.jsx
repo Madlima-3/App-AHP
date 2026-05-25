@@ -240,8 +240,8 @@ export default function Financas({
           <CardTitle className="text-lg text-slate-700 flex items-center">
             <Wallet className="mr-2" size={20} /> Minhas Contas
           </CardTitle>
-          <Button className="h-10 px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex items-center justify-center transition-colors" onClick={() => setShowContaModal(true)}>
-            <Plus size={14} className="mr-1" /> Nova Conta
+          <Button className="h-10 w-48 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex items-center justify-center transition-colors" onClick={() => setShowContaModal(true)}>
+            <Plus size={14} className="mr-1 shrink-0" /> <span className="truncate">Nova Conta</span>
           </Button>
         </CardHeader>
         <CardContent className="p-6">
@@ -340,8 +340,8 @@ export default function Financas({
             <PieChart className="mr-2" size={20} />
             Orçamentos por Categoria (Mês Atual)
           </CardTitle>
-          <Button className="h-10 px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex items-center justify-center transition-colors" onClick={() => setShowOrcamentoModal(true)}>
-            <Plus size={14} className="mr-1" /> Nova Categoria
+          <Button className="h-10 w-48 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex items-center justify-center transition-colors" onClick={() => setShowOrcamentoModal(true)}>
+            <Plus size={14} className="mr-1 shrink-0" /> <span className="truncate">Nova Categoria</span>
           </Button>
         </CardHeader>
         <CardContent className="p-6">
@@ -497,8 +497,8 @@ export default function Financas({
               <TrendingUp className="mr-2" size={20} />
               Histórico do Mês
             </CardTitle>
-            <Button className="h-10 px-4 py-2 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex items-center justify-center transition-colors" onClick={() => setShowModal(true)}>
-              <Plus size={14} className="mr-1" /> Novo Lançamento
+            <Button className="h-10 w-48 text-sm font-medium bg-indigo-600 hover:bg-indigo-700 text-white rounded-md flex items-center justify-center transition-colors" onClick={() => setShowModal(true)}>
+              <Plus size={14} className="mr-1 shrink-0" /> <span className="truncate">Novo Lançamento</span>
             </Button>
           </CardHeader>
           <CardContent className="p-0">
