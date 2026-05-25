@@ -54,27 +54,29 @@ export default function Membros({
         {membros.map(membro => (
           <Card 
             key={membro.id} 
-            className="shadow-sm border-slate-200 hover:border-indigo-300 transition-colors cursor-pointer group" 
+            className="shadow-sm border-slate-200 hover:border-indigo-300 transition-colors cursor-pointer group min-h-[110px]" 
             onClick={() => { setMembroSelecionado(membro.id); setAbaAtiva('metas'); }}
           >
-            <CardContent className="p-6 flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-lg">
-                  {membro.nome.charAt(0)}
+            <CardContent className="p-6 flex flex-col justify-center h-full">
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-lg shrink-0">
+                    {membro.nome.charAt(0)}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{membro.nome}</h3>
+                    {membro.papel && <p className="text-sm text-slate-500">{membro.papel}</p>}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{membro.nome}</h3>
-                  {membro.papel && <p className="text-sm text-slate-500">{membro.papel}</p>}
-                </div>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="text-slate-300 hover:text-red-500 hover:bg-red-50 shrink-0 ml-2" 
+                  onClick={(e) => { e.stopPropagation(); removerMembro(membro.id); }}
+                >
+                  <Trash2 size={18} />
+                </Button>
               </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="text-slate-300 hover:text-red-500 hover:bg-red-50" 
-                onClick={(e) => { e.stopPropagation(); removerMembro(membro.id); }}
-              >
-                <Trash2 size={18} />
-              </Button>
             </CardContent>
           </Card>
         ))}

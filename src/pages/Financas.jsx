@@ -182,9 +182,9 @@ export default function Financas({
 
       {/* Resumo Financeiro */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <Card className="bg-slate-800 text-white shadow-sm border-slate-700">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
+        <Card className="bg-slate-800 text-white shadow-sm border-slate-700 min-h-[110px]">
+          <CardContent className="p-6 flex flex-col justify-center h-full">
+            <div className="flex justify-between items-center w-full">
               <div>
                 <p className="text-sm font-medium text-slate-400 mb-1">Saldo Real (Efetivado)</p>
                 <h3 className="text-3xl font-bold">R$ {financas.saldo.toFixed(2)}</h3>
@@ -192,16 +192,16 @@ export default function Financas({
                   Projetado: R$ {(financas.saldoPrevisto ?? financas.saldo).toFixed(2)}
                 </p>
               </div>
-              <div className="p-3 bg-slate-700 rounded-lg">
+              <div className="p-3 bg-slate-700 rounded-lg shrink-0 ml-2">
                 <Wallet size={24} className="text-slate-300" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm border-emerald-100">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
+        <Card className="bg-white shadow-sm border-emerald-100 min-h-[110px]">
+          <CardContent className="p-6 flex flex-col justify-center h-full">
+            <div className="flex justify-between items-center w-full">
               <div>
                 <p className="text-sm font-medium text-slate-500 mb-1">Receitas (Efetivadas)</p>
                 <h3 className="text-2xl font-bold text-emerald-600">R$ {receitasEfetivadas.toFixed(2)}</h3>
@@ -209,16 +209,16 @@ export default function Financas({
                   Total planejado: R$ {receitasTotais.toFixed(2)}
                 </p>
               </div>
-              <div className="p-3 bg-emerald-50 rounded-lg">
+              <div className="p-3 bg-emerald-50 rounded-lg shrink-0 ml-2">
                 <ArrowUpRight size={24} className="text-emerald-500" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-white shadow-sm border-rose-100">
-          <CardContent className="p-6">
-            <div className="flex justify-between items-start">
+        <Card className="bg-white shadow-sm border-rose-100 min-h-[110px]">
+          <CardContent className="p-6 flex flex-col justify-center h-full">
+            <div className="flex justify-between items-center w-full">
               <div>
                 <p className="text-sm font-medium text-slate-500 mb-1">Despesas (Efetivadas)</p>
                 <h3 className="text-2xl font-bold text-rose-600">R$ {despesasEfetivadas.toFixed(2)}</h3>
@@ -226,7 +226,7 @@ export default function Financas({
                   Total planejado: R$ {despesasTotais.toFixed(2)}
                 </p>
               </div>
-              <div className="p-3 bg-rose-50 rounded-lg">
+              <div className="p-3 bg-rose-50 rounded-lg shrink-0 ml-2">
                 <ArrowDownRight size={24} className="text-rose-500" />
               </div>
             </div>

@@ -11,53 +11,61 @@ export default function Dashboard({ metas, membros, financas, alternarMetaStatus
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-indigo-50 to-white shadow-sm border-indigo-100">
-          <CardContent className="p-6 flex items-center space-x-4">
-            <div className="p-3 bg-indigo-100 rounded-full text-indigo-600">
-              <Users size={24} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-500">Membros</p>
-              <h3 className="text-2xl font-bold text-slate-800">{membros.length}</h3>
+        <Card className="bg-gradient-to-br from-indigo-50 to-white shadow-sm border-indigo-100 min-h-[110px]">
+          <CardContent className="p-6 flex flex-col justify-center h-full">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-indigo-100 rounded-full text-indigo-600">
+                <Users size={24} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">Membros</p>
+                <h3 className="text-2xl font-bold text-slate-800">{membros.length}</h3>
+              </div>
             </div>
           </CardContent>
         </Card>
         
-        <Card className="bg-gradient-to-br from-emerald-50 to-white shadow-sm border-emerald-100">
-          <CardContent className="p-6 flex items-center space-x-4">
-            <div className="p-3 bg-emerald-100 rounded-full text-emerald-600">
-              <Trophy size={24} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-500">Metas Ok</p>
-              <h3 className="text-2xl font-bold text-slate-800">{metasConcluidas}</h3>
+        <Card className="bg-gradient-to-br from-emerald-50 to-white shadow-sm border-emerald-100 min-h-[110px]">
+          <CardContent className="p-6 flex flex-col justify-center h-full">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-emerald-100 rounded-full text-emerald-600">
+                <Trophy size={24} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">Metas Ok</p>
+                <h3 className="text-2xl font-bold text-slate-800">{metasConcluidas}</h3>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-amber-50 to-white shadow-sm border-amber-100">
-          <CardContent className="p-6 flex items-center space-x-4">
-            <div className="p-3 bg-amber-100 rounded-full text-amber-600">
-              <Target size={24} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-500">Andamento</p>
-              <h3 className="text-2xl font-bold text-slate-800">{metasPendentes}</h3>
+        <Card className="bg-gradient-to-br from-amber-50 to-white shadow-sm border-amber-100 min-h-[110px]">
+          <CardContent className="p-6 flex flex-col justify-center h-full">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-amber-100 rounded-full text-amber-600">
+                <Target size={24} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">Andamento</p>
+                <h3 className="text-2xl font-bold text-slate-800">{metasPendentes}</h3>
+              </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Mini resumo financeiro no dashboard */}
-        <Card className="bg-gradient-to-br from-teal-50 to-white shadow-sm border-teal-100 cursor-pointer hover:shadow-md transition-shadow" onClick={() => setAbaAtiva('financas')}>
-          <CardContent className="p-6 flex items-center space-x-4">
-            <div className="p-3 bg-teal-100 rounded-full text-teal-600">
-              <Wallet size={24} />
-            </div>
-            <div>
-              <p className="text-sm font-medium text-slate-500">Saldo Familiar</p>
-              <h3 className={`text-xl font-bold ${financas.saldo >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
-                R$ {financas.saldo.toFixed(2)}
-              </h3>
+        <Card className="bg-gradient-to-br from-teal-50 to-white shadow-sm border-teal-100 cursor-pointer hover:shadow-md transition-shadow min-h-[110px]" onClick={() => setAbaAtiva('financas')}>
+          <CardContent className="p-6 flex flex-col justify-center h-full">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 bg-teal-100 rounded-full text-teal-600">
+                <Wallet size={24} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-500">Saldo Familiar</p>
+                <h3 className={`text-xl font-bold ${financas.saldo >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                  R$ {financas.saldo.toFixed(2)}
+                </h3>
+              </div>
             </div>
           </CardContent>
         </Card>
