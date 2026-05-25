@@ -156,75 +156,8 @@ export default function Financas({
         </div>
       </div>
 
-      {/* Botão de novo lançamento (menu superior) */}
-      <section className="flex justify-end mb-4">
-        {console.log("Renderizando botão Novo Lançamento na página Finanças")}
-        <Button variant="default" className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white" onClick={() => setShowModal(true)}>
-          <Plus className="mr-1" size={16} /> Novo Lançamento
-        </Button>
-   
-   
-   
-
-   
-   
-
-      </section>
-
-      {/* Minhas Contas */}
-      <section className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-slate-800 flex items-center">
-            <Wallet className="mr-2 text-indigo-600" size={20} /> Minhas Contas
-          </h3>
-          <Button variant="outline" size="sm" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => setShowContaModal(true)}>
-            <Plus size={14} className="mr-1" /> Nova Conta
-          </Button>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {contas.length === 0 && (
-            <div className="col-span-full p-4 border border-dashed border-slate-300 rounded-xl text-center text-slate-500 text-sm">
-              Nenhuma conta cadastrada. Cadastre sua primeira conta!
-            </div>
-          )}
-          {contas.map(conta => {
-            const transacoesDaConta = financas.transacoes.filter(t => t.contaId === conta.id);
-            const saldoConta = transacoesDaConta.reduce((acc, curr) => {
-              const isEfetivado = curr.efetuado !== false;
-              if (!isEfetivado) return acc;
-              return curr.tipo === 'receita' ? acc + curr.valor : acc - curr.valor;
-            }, parseFloat(conta.saldoInicial) || 0);
-
-            return (
-              <Card key={conta.id} className="bg-white shadow-sm border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all">
-                <CardContent className="p-5 flex flex-col items-start">
-                  <div className="flex justify-between items-start w-full mb-2">
-                    <span className="text-sm font-semibold text-slate-600">{conta.nome}</span>
-                    <button 
-                      className="text-slate-300 hover:text-red-500 transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if(window.confirm('Tem certeza que deseja excluir esta conta? O histórico não será perdido.')) {
-                          removerConta(conta.id);
-                        }
-                      }}
-                      title="Excluir Conta"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                  <h4 className={`text-xl font-bold ${saldoConta >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
-                    R$ {saldoConta.toFixed(2)}
-                  </h4>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
-      </section>
-
       {/* Resumo Financeiro */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <Card className="bg-slate-800 text-white shadow-sm border-slate-700">
           <CardContent className="p-6">
             <div className="flex justify-between items-start">
@@ -275,6 +208,64 @@ export default function Financas({
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+
+      {/* Minhas Contas */}
+      <Card className="shadow-sm border-slate-200">
+        <CardHeader className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between">
+          <CardTitle className="text-lg text-slate-700 flex items-center">
+            <Wallet className="mr-2" size={20} /> Minhas Contas
+          </CardTitle>
+          <Button variant="outline" size="sm" className="text-indigo-600 border-indigo-200 hover:bg-indigo-50" onClick={() => setShowContaModal(true)}>
+            <Plus size={14} className="mr-1" /> Nova Conta
+          </Button>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {contas.length === 0 && (
+            <div className="col-span-full p-4 border border-dashed border-slate-300 rounded-xl text-center text-slate-500 text-sm">
+              Nenhuma conta cadastrada. Cadastre sua primeira conta!
+            </div>
+          )}
+          {contas.map(conta => {
+            const transacoesDaConta = financas.transacoes.filter(t => t.contaId === conta.id);
+            const saldoConta = transacoesDaConta.reduce((acc, curr) => {
+              const isEfetivado = curr.efetuado !== false;
+              if (!isEfetivado) return acc;
+              return curr.tipo === 'receita' ? acc + curr.valor : acc - curr.valor;
+            }, parseFloat(conta.saldoInicial) || 0);
+
+            return (
+              <Card key={conta.id} className="bg-white shadow-sm border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all">
+                <CardContent className="p-5 flex flex-col items-start">
+                  <div className="flex justify-between items-start w-full mb-2">
+                    <span className="text-sm font-semibold text-slate-600">{conta.nome}</span>
+                    <button 
+                      className="text-slate-300 hover:text-red-500 transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if(window.confirm('Tem certeza que deseja excluir esta conta? O histórico não será perdido.')) {
+                          removerConta(conta.id);
+                        }
+                      }}
+                      title="Excluir Conta"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                  <h4 className={`text-xl font-bold ${saldoConta >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                    R$ {saldoConta.toFixed(2)}
+                  </h4>
+                </CardContent>
+              </Card>
+            )
+          })}
+          </div>
+        </CardContent>
+      </Card>
+
       </div>
 
       {/* Teto de Gastos / Orçamentos */}
@@ -435,12 +426,15 @@ export default function Financas({
 
 
         {/* Histórico */}
-        <Card className="lg:col-span-2 shadow-sm border-slate-200">
-          <CardHeader className="bg-slate-50 border-b border-slate-100">
+        <Card className="shadow-sm border-slate-200">
+          <CardHeader className="bg-slate-50 border-b border-slate-100 flex flex-row items-center justify-between">
             <CardTitle className="text-lg text-slate-700 flex items-center">
               <TrendingUp className="mr-2" size={20} />
               Histórico do Mês
             </CardTitle>
+            <Button variant="default" size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white" onClick={() => setShowModal(true)}>
+              <Plus size={14} className="mr-1" /> Novo Lançamento
+            </Button>
           </CardHeader>
           <CardContent className="p-0">
             <div className="divide-y divide-slate-100">
