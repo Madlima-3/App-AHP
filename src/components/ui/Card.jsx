@@ -1,8 +1,21 @@
 import React from 'react';
 
-const Card = React.forwardRef(({ className, ...props }, ref) => (
-  <div ref={ref} className={`rounded-xl border bg-white text-slate-900 shadow ${className || ''}`} {...props} />
-));
+const Card = React.forwardRef(({ className, ...props }, ref) => {
+  const hasCustomBg   = className && className.includes('bg-');
+  const hasCustomText = className && className.includes('text-');
+  return (
+    <div
+      ref={ref}
+      className={[
+        'rounded-xl border shadow',
+        hasCustomBg   ? '' : 'bg-white',
+        hasCustomText ? '' : 'text-slate-900',
+        className || ''
+      ].filter(Boolean).join(' ')}
+      {...props}
+    />
+  );
+});
 Card.displayName = "Card";
 
 const CardHeader = React.forwardRef(({ className, ...props }, ref) => (

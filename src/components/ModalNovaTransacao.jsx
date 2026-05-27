@@ -1,4 +1,5 @@
 
+import { useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
 import { CardHeader, CardTitle, CardContent } from './ui/Card';
 import { Button } from './ui/Button';
@@ -14,9 +15,18 @@ export default function ModalNovaTransacao({
   orcamentos,
   contas
 }) {
+  // Auto-seleciona a primeira conta se nenhuma estiver selecionada e só há uma opção
+  useEffect(() => {
+    if (showModal && !novaTransacao.contaId && contas && contas.length === 1) {
+      setNovaTransacao(prev => ({ ...prev, contaId: contas[0].id }));
+    }
+  }, [showModal]);
+
   if (!showModal) return null;
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!novaTransacao.contaId) return;
     adicionarTransacao(e);
     setShowModal(false);
   };
@@ -90,10 +100,17 @@ export default function ModalNovaTransacao({
 
             {/* Conta */}
             <div className="space-y-2">
-              <Label htmlFor="contaTransacao">Conta</Label>
+              <Label htmlFor="contaTransacao">
+                Conta <span className="text-vcoral">*</span>
+              </Label>
+              {contas && contas.length === 0 ? (
+                <p className="text-xs text-vcoral bg-vcoral-50 border border-vcoral-100 rounded-md px-3 py-2">
+                  Cadastre ao menos uma conta antes de registrar um lançamento.
+                </p>
+              ) : (
               <select
                 id="contaTransacao"
-                className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vblue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className={`flex h-10 w-full rounded-md border bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vblue ${!novaTransacao.contaId ? 'border-vcoral-100' : 'border-slate-200'}`}
                 value={novaTransacao.contaId || ''}
                 onChange={e => setNovaTransacao({ ...novaTransacao, contaId: e.target.value })}
                 required
@@ -103,6 +120,7 @@ export default function ModalNovaTransacao({
                   <option key={conta.id} value={conta.id}>{conta.nome}</option>
                 ))}
               </select>
+              )}
             </div>
 
             {/* Descrição */}

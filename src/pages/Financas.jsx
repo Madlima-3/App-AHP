@@ -178,10 +178,12 @@ export default function Financas({
           <CardContent className="p-6 flex flex-col justify-center h-full">
             <div className="flex justify-between items-center w-full">
               <div>
-                <p className="text-sm font-medium text-vblue-100 mb-1">Saldo Real (Efetivado)</p>
-                <h3 className="text-3xl font-bold">R$ {financas.saldo.toFixed(2)}</h3>
+                <p className="text-sm font-medium text-vblue-100 mb-1">Saldo do Mês (Efetivado)</p>
+                <h3 className={`text-3xl font-bold ${receitasEfetivadas - despesasEfetivadas < 0 ? 'text-vpink' : ''}`}>
+                  R$ {(receitasEfetivadas - despesasEfetivadas).toFixed(2)}
+                </h3>
                 <p className="text-xs text-vblue-100 mt-1">
-                  Projetado: R$ {(financas.saldoPrevisto ?? financas.saldo).toFixed(2)}
+                  Com pendentes: R$ {(receitasTotais - despesasTotais).toFixed(2)}
                 </p>
               </div>
               <div className="p-3 bg-vblue-700 rounded-lg shrink-0 ml-2">

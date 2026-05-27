@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Target, Plus, Trash2, UserPlus, Calendar, CheckCircle, CheckSquare, CalendarCheck, Repeat, TrendingUp } from 'lucide-react';
+import { Target, Plus, Trash2, UserPlus, Calendar, CheckCircle, CheckSquare, CalendarCheck, Repeat, TrendingUp, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -125,10 +125,23 @@ function FrequenciaCounter({ meta, adicionarCheckin, removerCheckin }) {
   );
 }
 
-function QuantitativoProgress({ meta, adicionarCheckin }) {
+function QuantitativoProgress({ meta, adicionarCheckin, removerCheckin }) {
   const [input, setInput] = useState('');
-  const { total, alvo, pct } = calcQuantitativoProgress(meta.historico, meta.alvo, meta.periodo);
-  const periodoLabel = { diario: 'hoje', semanal: 'esta semana', mensal: 'este mês' }[meta.periodo] || '';
+  const [showHistorico, setShowHistorico] = useState(false);
+
+  const periodo = meta.periodo || 'semanal';
+  const { total, alvo, pct } = calcQuantitativoProgress(meta.historico, meta.alvo, periodo);
+  const periodoLabel = { diario: 'hoje', semanal: 'esta semana', mensal: 'este mês' }[periodo] || '';
+  const metaCumprida = alvo > 0 && pct >= 100;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const historico = meta.historico || [];
+  const periodoEntries = [...(periodo === 'diario'
+    ? historico.filter(e => e.data === todayStr)
+    : periodo === 'mensal'
+      ? historico.filter(e => e.data.startsWith(todayStr.slice(0, 7)))
+      : historico.filter(e => getWeekDates().includes(e.data))
+  )].sort((a, b) => (b.ts || 0) - (a.ts || 0));
 
   const handleAdd = () => {
     const v = parseFloat(input);
@@ -137,17 +150,24 @@ function QuantitativoProgress({ meta, adicionarCheckin }) {
     setInput('');
   };
 
+  const fmtVal = v => Number.isInteger(v) ? v : parseFloat(v.toFixed(2));
+
   return (
     <div className="mt-3 space-y-2">
+      {metaCumprida && (
+        <div className="flex items-center justify-center gap-2 bg-vblue-50 border border-vblue-100 rounded-lg py-2 text-vblue font-semibold text-xs">
+          <CheckCircle size={14} className="fill-vblue-100" /> Meta atingida!
+        </div>
+      )}
       <div className="flex justify-between text-xs text-slate-500">
         <span>{periodoLabel}</span>
-        <span className="font-semibold text-slate-700">
-          {Number.isInteger(total) ? total : total.toFixed(1)}/{alvo} {meta.unidade || ''}
+        <span className={`font-semibold ${metaCumprida ? 'text-vblue' : 'text-slate-700'}`}>
+          {fmtVal(total)}/{alvo} {meta.unidade || ''}
         </span>
       </div>
       <div className="w-full bg-slate-100 rounded-full h-2">
         <div
-          className="bg-vyellow-700 h-2 rounded-full transition-all"
+          className={`h-2 rounded-full transition-all ${metaCumprida ? 'bg-vblue' : 'bg-vyellow-700'}`}
           style={{ width: `${pct}%` }}
         />
       </div>
@@ -170,6 +190,34 @@ function QuantitativoProgress({ meta, adicionarCheckin }) {
           OK
         </Button>
       </div>
+      {periodoEntries.length > 0 && (
+        <div>
+          <button
+            type="button"
+            onClick={() => setShowHistorico(h => !h)}
+            className="flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600 transition-colors"
+          >
+            {showHistorico ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+            {periodoEntries.length} lançamento{periodoEntries.length > 1 ? 's' : ''} {periodoLabel}
+          </button>
+          {showHistorico && (
+            <div className="mt-1 space-y-1 max-h-36 overflow-y-auto">
+              {periodoEntries.map(entry => (
+                <div key={entry.ts} className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded px-2 py-1 text-xs">
+                  <span className="text-slate-600">{entry.data} — <span className="font-medium">{fmtVal(entry.valor)} {meta.unidade || ''}</span></span>
+                  <button
+                    onClick={() => removerCheckin(meta.id, entry)}
+                    className="text-slate-300 hover:text-vcoral transition-colors ml-2"
+                    title="Remover lançamento"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -407,6 +455,10 @@ export default function Metas({
           const tipoMeta = meta.tipo || 'marco';
           const TipoIcon = TIPO_ICONS[tipoMeta] || CheckSquare;
           const tipoLabel = TIPOS_META.find(t => t.id === tipoMeta)?.label || 'Ação Única';
+          const quantCumprida = tipoMeta === 'quantitativo' && (() => {
+            const { pct } = calcQuantitativoProgress(meta.historico, meta.alvo, meta.periodo);
+            return meta.alvo > 0 && pct >= 100;
+          })();
 
           return (
             <Card
@@ -414,7 +466,9 @@ export default function Metas({
               className={`shadow-sm border transition-all ${
                 tipoMeta === 'marco' && meta.concluida
                   ? 'bg-slate-50 border-slate-200 opacity-75'
-                  : 'border-slate-200 hover:shadow-md'
+                  : quantCumprida
+                    ? 'border-vblue-100 bg-vblue-50 hover:shadow-md'
+                    : 'border-slate-200 hover:shadow-md'
               }`}
             >
               <CardContent className="p-5">
@@ -490,6 +544,7 @@ export default function Metas({
                     <QuantitativoProgress
                       meta={meta}
                       adicionarCheckin={adicionarCheckin}
+                      removerCheckin={removerCheckin}
                     />
                   )}
                 </div>

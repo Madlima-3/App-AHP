@@ -192,7 +192,7 @@ export default function VolverFamiliaApp() {
 
   const adicionarTransacao = async (e) => {
     e.preventDefault();
-    if (!novaTransacao.descricao || !novaTransacao.valor) return;
+    if (!novaTransacao.descricao || !novaTransacao.valor || !novaTransacao.contaId) return;
 
     const valorNum = parseFloat(novaTransacao.valor);
     const repeticao = novaTransacao.repeticao || 'unica';
@@ -353,6 +353,24 @@ export default function VolverFamiliaApp() {
     }
   };
 
+  // Saldo Real = soma dos saldos de cada conta (saldoInicial + transações efetivadas vinculadas)
+  // Projetado  = idem incluindo transações pendentes
+  const saldoReal = contas.reduce((total, conta) => {
+    const net = financas.transacoes
+      .filter(t => t.contaId === conta.id && t.efetuado !== false)
+      .reduce((acc, t) => t.tipo === 'receita' ? acc + t.valor : acc - t.valor, 0);
+    return total + (parseFloat(conta.saldoInicial) || 0) + net;
+  }, 0);
+
+  const saldoProjetado = contas.reduce((total, conta) => {
+    const net = financas.transacoes
+      .filter(t => t.contaId === conta.id)
+      .reduce((acc, t) => t.tipo === 'receita' ? acc + t.valor : acc - t.valor, 0);
+    return total + (parseFloat(conta.saldoInicial) || 0) + net;
+  }, 0);
+
+  const financasDisplay = { ...financas, saldo: saldoReal, saldoPrevisto: saldoProjetado };
+
   return (
     <div className="min-h-screen bg-bgray font-sans text-slate-900">
       {/* Header */}
@@ -445,7 +463,7 @@ export default function VolverFamiliaApp() {
             <Dashboard
               metas={metas}
               membros={membros}
-              financas={financas}
+              financas={financasDisplay}
               alternarMetaStatus={alternarMetaStatus}
               adicionarCheckin={adicionarCheckin}
               removerCheckin={removerCheckin}
