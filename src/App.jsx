@@ -331,7 +331,7 @@ export default function VolverFamiliaApp() {
               </div>
               <h1 className="text-xl font-bold tracking-tight">Volver Família</h1>
             </div>
-            <div className="hidden md:flex space-x-1 text-xs font-medium">
+            <div className="hidden lg:flex space-x-1 text-xs font-medium">
               {PILARES.map(pilar => (
                 <span key={pilar.id} className="px-2 py-1 rounded bg-vblue-700 flex items-center">
                   <pilar.icon size={12} className="mr-1" /> {pilar.nome}
@@ -343,10 +343,10 @@ export default function VolverFamiliaApp() {
       </header>
 
       {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 flex flex-col md:flex-row gap-8 pb-24 md:pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-8 flex flex-col lg:flex-row gap-8 pb-24 lg:pb-8">
 
         {/* Sidebar Navigation */}
-        <aside className="hidden md:block w-64 shrink-0">
+        <aside className="hidden lg:block w-64 shrink-0">
           <nav className="space-y-2 sticky top-24">
             <button
               onClick={() => { setAbaAtiva('dashboard'); setMembroSelecionado(null); }}
@@ -472,7 +472,7 @@ export default function VolverFamiliaApp() {
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-bgray flex justify-around items-center p-2 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-bgray flex justify-around items-center p-2 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
         <button
           onClick={() => { setAbaAtiva('dashboard'); setMembroSelecionado(null); }}
           className={`flex flex-col items-center p-2 min-w-[64px] transition-colors ${abaAtiva === 'dashboard' ? 'text-vblue' : 'text-slate-400 hover:text-slate-600'}`}
