@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Activity, Heart, Users, Target, Wallet, ChevronRight, FileText } from 'lucide-react';
 import { PILARES } from './constants';
 import { db } from './lib/firebase';
-import { collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, setDoc, writeBatch, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, setDoc, writeBatch, where, getDocs, arrayUnion, arrayRemove } from 'firebase/firestore';
 
 import Dashboard from './pages/Dashboard';
 import Membros from './pages/Membros';
@@ -20,7 +20,8 @@ export default function VolverFamiliaApp() {
 
   const [novoMembro, setNovoMembro] = useState({ nome: '', papel: '' });
   const [novaMeta, setNovaMeta] = useState({
-    titulo: '', descricao: '', pilar: 'fisico', membroId: '', prazo: ''
+    titulo: '', descricao: '', pilar: 'fisico', membroId: '', prazo: '',
+    tipo: 'marco', alvo: '', unidade: '', periodo: 'semanal'
   });
   const [novaTransacao, setNovaTransacao] = useState({
     descricao: '', valor: '', tipo: 'despesa', categoria: 'Sem categoria', data: new Date().toISOString().split('T')[0], repeticao: 'unica', quantidadeMeses: '', efetuado: true, contaId: ''
@@ -107,8 +108,20 @@ export default function VolverFamiliaApp() {
     e.preventDefault();
     if (!novaMeta.titulo || !novaMeta.membroId) return;
     try {
-      await addDoc(collection(db, 'metas'), { ...novaMeta, concluida: false });
-      setNovaMeta({ titulo: '', descricao: '', pilar: 'fisico', membroId: '', prazo: '' });
+      await addDoc(collection(db, 'metas'), {
+        titulo: novaMeta.titulo,
+        descricao: novaMeta.descricao,
+        pilar: novaMeta.pilar,
+        membroId: novaMeta.membroId,
+        prazo: novaMeta.prazo,
+        tipo: novaMeta.tipo || 'marco',
+        alvo: novaMeta.alvo ? Number(novaMeta.alvo) : null,
+        unidade: novaMeta.unidade || null,
+        periodo: novaMeta.periodo || null,
+        historico: [],
+        concluida: false,
+      });
+      setNovaMeta({ titulo: '', descricao: '', pilar: 'fisico', membroId: '', prazo: '', tipo: 'marco', alvo: '', unidade: '', periodo: 'semanal' });
     } catch (error) {
       console.error("Erro ao adicionar meta:", error);
     }
@@ -129,6 +142,27 @@ export default function VolverFamiliaApp() {
       await deleteDoc(doc(db, 'metas', id));
     } catch (error) {
       console.error("Erro ao remover meta:", error);
+    }
+  };
+
+  const adicionarCheckin = async (metaId, valor = 1, dataStr = null) => {
+    const entrada = {
+      data: dataStr || new Date().toISOString().split('T')[0],
+      valor,
+      ts: Date.now(),
+    };
+    try {
+      await updateDoc(doc(db, 'metas', metaId), { historico: arrayUnion(entrada) });
+    } catch (error) {
+      console.error("Erro ao adicionar check-in:", error);
+    }
+  };
+
+  const removerCheckin = async (metaId, entradaExistente) => {
+    try {
+      await updateDoc(doc(db, 'metas', metaId), { historico: arrayRemove(entradaExistente) });
+    } catch (error) {
+      console.error("Erro ao remover check-in:", error);
     }
   };
 
@@ -413,6 +447,8 @@ export default function VolverFamiliaApp() {
               membros={membros}
               financas={financas}
               alternarMetaStatus={alternarMetaStatus}
+              adicionarCheckin={adicionarCheckin}
+              removerCheckin={removerCheckin}
               setAbaAtiva={setAbaAtiva}
             />
           )}
@@ -436,6 +472,8 @@ export default function VolverFamiliaApp() {
               adicionarMeta={adicionarMeta}
               alternarMetaStatus={alternarMetaStatus}
               removerMeta={removerMeta}
+              adicionarCheckin={adicionarCheckin}
+              removerCheckin={removerCheckin}
               membroSelecionado={membroSelecionado}
               setMembroSelecionado={setMembroSelecionado}
             />
