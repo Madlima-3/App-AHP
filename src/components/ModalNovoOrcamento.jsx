@@ -70,7 +70,7 @@ export default function ModalNovoOrcamento({
                 onChange={e => setNovoLimite(e.target.value)}
               />
             </div>
-            <Button type="submit" className="w-full bg-slate-800 hover:bg-slate-900 mt-2 text-white">
+            <Button type="submit" className="w-full bg-vblue hover:bg-vblue-700 mt-2 text-white">
               <Plus size={16} className="mr-2" /> Salvar Orçamento
             </Button>
           </form>

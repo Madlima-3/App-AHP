@@ -7,14 +7,14 @@ import { PILARES } from '../constants';
 export default function Dashboard({ metas, membros, financas, alternarMetaStatus, setAbaAtiva }) {
   const metasPendentes = metas.filter(m => !m.concluida).length;
   const metasConcluidas = metas.filter(m => m.concluida).length;
-  
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-indigo-50 to-white shadow-sm border-indigo-100 min-h-[110px]">
+        <Card className="bg-gradient-to-br from-vblue-50 to-white shadow-sm border-vblue-100 min-h-[110px]">
           <CardContent className="p-6 flex flex-col justify-center h-full">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-indigo-100 rounded-full text-indigo-600">
+              <div className="p-3 bg-vblue-100 rounded-full text-vblue">
                 <Users size={24} />
               </div>
               <div>
@@ -24,11 +24,11 @@ export default function Dashboard({ metas, membros, financas, alternarMetaStatus
             </div>
           </CardContent>
         </Card>
-        
-        <Card className="bg-gradient-to-br from-emerald-50 to-white shadow-sm border-emerald-100 min-h-[110px]">
+
+        <Card className="bg-gradient-to-br from-vpink-50 to-white shadow-sm border-vpink-100 min-h-[110px]">
           <CardContent className="p-6 flex flex-col justify-center h-full">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-emerald-100 rounded-full text-emerald-600">
+              <div className="p-3 bg-vpink-100 rounded-full text-vpink-700">
                 <Trophy size={24} />
               </div>
               <div>
@@ -39,10 +39,10 @@ export default function Dashboard({ metas, membros, financas, alternarMetaStatus
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-amber-50 to-white shadow-sm border-amber-100 min-h-[110px]">
+        <Card className="bg-gradient-to-br from-vyellow-50 to-white shadow-sm border-vyellow-100 min-h-[110px]">
           <CardContent className="p-6 flex flex-col justify-center h-full">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-amber-100 rounded-full text-amber-600">
+              <div className="p-3 bg-vyellow-100 rounded-full text-vyellow-800">
                 <Target size={24} />
               </div>
               <div>
@@ -53,16 +53,15 @@ export default function Dashboard({ metas, membros, financas, alternarMetaStatus
           </CardContent>
         </Card>
 
-        {/* Mini resumo financeiro no dashboard */}
-        <Card className="bg-gradient-to-br from-teal-50 to-white shadow-sm border-teal-100 cursor-pointer hover:shadow-md transition-shadow min-h-[110px]" onClick={() => setAbaAtiva('financas')}>
+        <Card className="bg-gradient-to-br from-vblue-50 to-white shadow-sm border-vblue-100 cursor-pointer hover:shadow-md transition-shadow min-h-[110px]" onClick={() => setAbaAtiva('financas')}>
           <CardContent className="p-6 flex flex-col justify-center h-full">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-teal-100 rounded-full text-teal-600">
+              <div className="p-3 bg-vblue-100 rounded-full text-vblue">
                 <Wallet size={24} />
               </div>
               <div>
                 <p className="text-sm font-medium text-slate-500">Saldo Familiar</p>
-                <h3 className={`text-xl font-bold ${financas.saldo >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                <h3 className={`text-xl font-bold ${financas.saldo >= 0 ? 'text-vblue' : 'text-vcoral'}`}>
                   R$ {financas.saldo.toFixed(2)}
                 </h3>
               </div>
@@ -84,7 +83,7 @@ export default function Dashboard({ metas, membros, financas, alternarMetaStatus
               {metas.slice(0, 5).map(meta => {
                 const membro = meta.membroId === 'familia' ? { nome: 'Toda a Família' } : membros.find(m => String(m.id) === String(meta.membroId));
                 const pilar = PILARES.find(p => p.id === meta.pilar);
-                
+
                 return (
                   <div key={meta.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                     <div className="flex items-center space-x-3">
@@ -98,13 +97,13 @@ export default function Dashboard({ metas, membros, financas, alternarMetaStatus
                          <p className="text-xs text-slate-500">Para: {membro?.nome || 'Desconhecido'}</p>
                        </div>
                     </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       onClick={() => alternarMetaStatus(meta.id)}
-                      className={meta.concluida ? 'text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50' : 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50'}
+                      className={meta.concluida ? 'text-vblue hover:text-vblue-700 hover:bg-vblue-50' : 'text-slate-400 hover:text-vblue hover:bg-vblue-50'}
                     >
-                      <CheckCircle size={20} className={meta.concluida ? "fill-emerald-100" : ""} />
+                      <CheckCircle size={20} className={meta.concluida ? "fill-vblue-100" : ""} />
                     </Button>
                   </div>
                 )
@@ -125,7 +124,7 @@ export default function Dashboard({ metas, membros, financas, alternarMetaStatus
               {PILARES.map(pilar => {
                 const contagem = metas.filter(m => m.pilar === pilar.id).length;
                 return (
-                  <div key={pilar.id} className={`p-4 rounded-xl border ${pilar.color.replace('text-', 'border-').replace('bg-', 'bg-opacity-20 bg-')} flex flex-col items-center text-center`}>
+                  <div key={pilar.id} className={`p-4 rounded-xl border ${pilar.color} ${pilar.borderColor} flex flex-col items-center text-center`}>
                     <pilar.icon size={24} className={`mb-2 ${pilar.color.split(' ')[1]}`} />
                     <h4 className="font-semibold text-slate-700 text-sm">{pilar.nome}</h4>
                     <p className="text-xs font-medium mt-1">{contagem} metas</p>

@@ -5,14 +5,14 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 
-export default function Membros({ 
-  membros, 
-  novoMembro, 
-  setNovoMembro, 
-  adicionarMembro, 
-  removerMembro, 
-  setMembroSelecionado, 
-  setAbaAtiva 
+export default function Membros({
+  membros,
+  novoMembro,
+  setNovoMembro,
+  adicionarMembro,
+  removerMembro,
+  setMembroSelecionado,
+  setAbaAtiva
 }) {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -27,23 +27,23 @@ export default function Membros({
           <form onSubmit={adicionarMembro} className="flex flex-col sm:flex-row gap-4 items-end">
             <div className="w-full space-y-2">
               <Label htmlFor="nome">Nome</Label>
-              <Input 
-                id="nome" 
-                placeholder="Ex: Ana" 
+              <Input
+                id="nome"
+                placeholder="Ex: Ana"
                 value={novoMembro.nome}
                 onChange={e => setNovoMembro({...novoMembro, nome: e.target.value})}
               />
             </div>
             <div className="w-full space-y-2">
               <Label htmlFor="papel">Papel na Família (opcional)</Label>
-              <Input 
-                id="papel" 
-                placeholder="Ex: Filha" 
+              <Input
+                id="papel"
+                placeholder="Ex: Filha"
                 value={novoMembro.papel}
                 onChange={e => setNovoMembro({...novoMembro, papel: e.target.value})}
               />
             </div>
-            <Button type="submit" className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700">
+            <Button type="submit" className="w-full sm:w-auto bg-vblue hover:bg-vblue-700 text-white">
               <Plus size={16} className="mr-2" /> Adicionar
             </Button>
           </form>
@@ -52,26 +52,26 @@ export default function Membros({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {membros.map(membro => (
-          <Card 
-            key={membro.id} 
-            className="shadow-sm border-slate-200 hover:border-indigo-300 transition-colors cursor-pointer group min-h-[110px]" 
+          <Card
+            key={membro.id}
+            className="shadow-sm border-slate-200 hover:border-vblue-100 transition-colors cursor-pointer group min-h-[110px]"
             onClick={() => { setMembroSelecionado(membro.id); setAbaAtiva('metas'); }}
           >
             <CardContent className="p-6 flex flex-col justify-center h-full">
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-lg shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-vblue-100 flex items-center justify-center text-vblue font-bold text-lg shrink-0">
                     {membro.nome.charAt(0)}
                   </div>
                   <div>
-                    <h3 className="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{membro.nome}</h3>
+                    <h3 className="font-bold text-slate-800 group-hover:text-vblue transition-colors">{membro.nome}</h3>
                     {membro.papel && <p className="text-sm text-slate-500">{membro.papel}</p>}
                   </div>
                 </div>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="text-slate-300 hover:text-red-500 hover:bg-red-50 shrink-0 ml-2" 
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-slate-300 hover:text-vcoral hover:bg-vcoral-50 shrink-0 ml-2"
                   onClick={(e) => { e.stopPropagation(); removerMembro(membro.id); }}
                 >
                   <Trash2 size={18} />

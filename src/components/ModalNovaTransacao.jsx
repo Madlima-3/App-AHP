@@ -17,8 +17,6 @@ export default function ModalNovaTransacao({
   if (!showModal) return null;
 
   const handleSubmit = (e) => {
-    // A função adicionarTransacao vinda de props cuida do e.preventDefault() e de salvar,
-    // então a chamamos e logo depois fechamos o modal.
     adicionarTransacao(e);
     setShowModal(false);
   };
@@ -52,7 +50,7 @@ export default function ModalNovaTransacao({
               <Button
                 type="button"
                 variant={novaTransacao.tipo === 'despesa' ? 'default' : 'outline'}
-                className={`flex-1 ${novaTransacao.tipo === 'despesa' ? 'bg-rose-600 hover:bg-rose-700' : ''}`}
+                className={`flex-1 ${novaTransacao.tipo === 'despesa' ? 'bg-vcoral hover:bg-vcoral-700 text-white' : ''}`}
                 onClick={() => setNovaTransacao({ ...novaTransacao, tipo: 'despesa' })}
               >
                 Despesa
@@ -60,7 +58,7 @@ export default function ModalNovaTransacao({
               <Button
                 type="button"
                 variant={novaTransacao.tipo === 'receita' ? 'default' : 'outline'}
-                className={`flex-1 ${novaTransacao.tipo === 'receita' ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
+                className={`flex-1 ${novaTransacao.tipo === 'receita' ? 'bg-vblue hover:bg-vblue-700 text-white' : ''}`}
                 onClick={() => setNovaTransacao({ ...novaTransacao, tipo: 'receita' })}
               >
                 Receita
@@ -74,7 +72,7 @@ export default function ModalNovaTransacao({
                 <Button
                   type="button"
                   variant={novaTransacao.efetuado ? 'default' : 'outline'}
-                  className={`flex-1 text-xs ${novaTransacao.efetuado ? 'bg-emerald-600 hover:bg-emerald-700' : ''}`}
+                  className={`flex-1 text-xs ${novaTransacao.efetuado ? 'bg-vblue hover:bg-vblue-700 text-white' : ''}`}
                   onClick={() => setNovaTransacao({ ...novaTransacao, efetuado: true })}
                 >
                   Efetivado (Pago/Rec.)
@@ -82,7 +80,7 @@ export default function ModalNovaTransacao({
                 <Button
                   type="button"
                   variant={!novaTransacao.efetuado ? 'default' : 'outline'}
-                  className={`flex-1 text-xs ${!novaTransacao.efetuado ? 'bg-amber-600 hover:bg-amber-700' : ''}`}
+                  className={`flex-1 text-xs ${!novaTransacao.efetuado ? 'bg-vyellow hover:bg-vyellow text-slate-800' : ''}`}
                   onClick={() => setNovaTransacao({ ...novaTransacao, efetuado: false })}
                 >
                   Pendente (Agendado)
@@ -95,7 +93,7 @@ export default function ModalNovaTransacao({
               <Label htmlFor="contaTransacao">Conta</Label>
               <select
                 id="contaTransacao"
-                className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vblue focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 value={novaTransacao.contaId || ''}
                 onChange={e => setNovaTransacao({ ...novaTransacao, contaId: e.target.value })}
                 required
@@ -141,7 +139,7 @@ export default function ModalNovaTransacao({
                 <Button
                   type="button"
                   variant={(novaTransacao.repeticao || 'unica') === 'unica' ? 'default' : 'outline'}
-                  className={`text-xs ${(novaTransacao.repeticao || 'unica') === 'unica' ? 'bg-slate-800 text-white hover:bg-slate-700' : ''}`}
+                  className={`text-xs ${(novaTransacao.repeticao || 'unica') === 'unica' ? 'bg-vblue-800 text-white hover:bg-vblue-700' : ''}`}
                   onClick={() => setNovaTransacao({ ...novaTransacao, repeticao: 'unica', quantidadeMeses: '' })}
                 >
                   Única
@@ -149,7 +147,7 @@ export default function ModalNovaTransacao({
                 <Button
                   type="button"
                   variant={novaTransacao.repeticao === 'parcelada' ? 'default' : 'outline'}
-                  className={`text-xs ${novaTransacao.repeticao === 'parcelada' ? 'bg-slate-800 text-white hover:bg-slate-700' : ''}`}
+                  className={`text-xs ${novaTransacao.repeticao === 'parcelada' ? 'bg-vblue-800 text-white hover:bg-vblue-700' : ''}`}
                   onClick={() => setNovaTransacao({ ...novaTransacao, repeticao: 'parcelada', quantidadeMeses: '2' })}
                 >
                   Parcelada
@@ -157,7 +155,7 @@ export default function ModalNovaTransacao({
                 <Button
                   type="button"
                   variant={novaTransacao.repeticao === 'fixa' ? 'default' : 'outline'}
-                  className={`text-xs ${novaTransacao.repeticao === 'fixa' ? 'bg-slate-800 text-white hover:bg-slate-700' : ''}`}
+                  className={`text-xs ${novaTransacao.repeticao === 'fixa' ? 'bg-vblue-800 text-white hover:bg-vblue-700' : ''}`}
                   onClick={() => setNovaTransacao({ ...novaTransacao, repeticao: 'fixa', quantidadeMeses: '12' })}
                 >
                   Fixa
@@ -193,7 +191,7 @@ export default function ModalNovaTransacao({
                 <Label htmlFor="catTransacao">Categoria</Label>
                 <select
                   id="catTransacao"
-                  className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                  className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-vblue"
                   value={novaTransacao.categoria}
                   onChange={e => setNovaTransacao({ ...novaTransacao, categoria: e.target.value })}
                 >
@@ -214,7 +212,7 @@ export default function ModalNovaTransacao({
               </div>
             </div>
 
-            <Button type="submit" className="w-full bg-slate-800 hover:bg-slate-900 mt-2 text-white">
+            <Button type="submit" className="w-full bg-vblue hover:bg-vblue-700 text-white mt-2">
               Registrar {novaTransacao.tipo === 'receita' ? 'Receita' : 'Despesa'}
             </Button>
           </form>
