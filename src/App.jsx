@@ -5,6 +5,7 @@ import { PILARES } from './constants';
 import { db } from './lib/firebase';
 import { collection, addDoc, deleteDoc, doc, updateDoc, onSnapshot, query, setDoc, writeBatch, where, getDocs, arrayUnion, arrayRemove } from 'firebase/firestore';
 
+import EasterEggModal from './components/EasterEggModal';
 import Dashboard from './pages/Dashboard';
 import Membros from './pages/Membros';
 import Metas from './pages/Metas';
@@ -29,6 +30,7 @@ export default function VolverFamiliaApp() {
 
   const [abaAtiva, setAbaAtiva] = useState('dashboard');
   const [membroSelecionado, setMembroSelecionado] = useState(null);
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
 
   // Firestore Real-time Listeners
   useEffect(() => {
@@ -378,9 +380,13 @@ export default function VolverFamiliaApp() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="bg-white text-vblue p-1.5 rounded-lg">
+              <button
+                onClick={() => setShowEasterEgg(true)}
+                className="bg-white text-vblue p-1.5 rounded-lg hover:scale-110 transition-transform active:scale-95"
+                aria-label="Surpresa"
+              >
                 <Heart size={24} className="fill-vblue" />
-              </div>
+              </button>
               <h1 className="text-xl font-bold tracking-tight">Volver Família</h1>
             </div>
             <div className="hidden lg:flex space-x-1 text-xs font-medium">
@@ -565,6 +571,7 @@ export default function VolverFamiliaApp() {
           <span className="text-[10px] font-medium">Relatórios</span>
         </button>
       </nav>
+      {showEasterEgg && <EasterEggModal onClose={() => setShowEasterEgg(false)} />}
     </div>
   );
 }
