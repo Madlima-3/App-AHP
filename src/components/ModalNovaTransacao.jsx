@@ -33,11 +33,11 @@ export default function ModalNovaTransacao({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4"
       onClick={() => setShowModal(false)}
     >
       <div
-        className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative"
+        className="bg-white rounded-lg shadow-lg w-full max-w-md relative flex flex-col max-h-[90vh]"
         onClick={e => e.stopPropagation()}
       >
         <button
@@ -53,7 +53,7 @@ export default function ModalNovaTransacao({
             Novo Lançamento
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6">
+        <CardContent className="p-6 overflow-y-auto">
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Tipo */}
             <div className="flex gap-2">
