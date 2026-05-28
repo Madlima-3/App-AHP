@@ -596,83 +596,80 @@ export default function Financas({
                 ) : (
                   <div
                     key={transacao.id}
-                    className={`p-4 flex items-center hover:bg-bgray-100 transition-colors ${
+                    className={`px-3 py-2.5 flex items-center gap-3 hover:bg-bgray-100 transition-colors ${
                       transacao.efetuado === false
                         ? 'bg-vyellow-50/40 opacity-85 border-l-4 border-l-vyellow'
                         : ''
                     }`}
                   >
-                    <div className="flex items-center space-x-4 flex-1">
-                      <button
-                        onClick={() => alternarTransacaoStatus(transacao.id)}
-                        className={`p-2 rounded-full transition-all relative group cursor-pointer ${
-                          transacao.efetuado === false
-                            ? 'bg-vyellow-100 text-vyellow-800 hover:bg-vblue-100 hover:text-vblue'
-                            : transacao.tipo === 'receita'
-                              ? 'bg-vblue-100 text-vblue hover:bg-vyellow-100 hover:text-vyellow-800'
-                              : 'bg-vcoral-100 text-vcoral hover:bg-vyellow-100 hover:text-vyellow-800'
-                        }`}
-                        title={transacao.efetuado === false ? "Marcar como Efetivado" : "Marcar como Pendente"}
-                      >
-                        {transacao.efetuado === false ? (
-                          <Clock size={20} className="animate-pulse" />
-                        ) : transacao.tipo === 'receita' ? (
-                          <ArrowUpRight size={20} />
-                        ) : (
-                          <ArrowDownRight size={20} />
-                        )}
+                    {/* Status icon */}
+                    <button
+                      onClick={() => alternarTransacaoStatus(transacao.id)}
+                      className={`shrink-0 p-2 rounded-full transition-all relative group cursor-pointer ${
+                        transacao.efetuado === false
+                          ? 'bg-vyellow-100 text-vyellow-800 hover:bg-vblue-100 hover:text-vblue'
+                          : transacao.tipo === 'receita'
+                            ? 'bg-vblue-100 text-vblue hover:bg-vyellow-100 hover:text-vyellow-800'
+                            : 'bg-vcoral-100 text-vcoral hover:bg-vyellow-100 hover:text-vyellow-800'
+                      }`}
+                      title={transacao.efetuado === false ? "Marcar como Efetivado" : "Marcar como Pendente"}
+                    >
+                      {transacao.efetuado === false ? (
+                        <Clock size={18} className="animate-pulse" />
+                      ) : transacao.tipo === 'receita' ? (
+                        <ArrowUpRight size={18} />
+                      ) : (
+                        <ArrowDownRight size={18} />
+                      )}
+                      <span className="absolute hidden group-hover:block bg-slate-900 text-white text-[10px] py-1 px-2 rounded -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-10 shadow-md">
+                        {transacao.efetuado === false ? "Pendente - Clique para Efetivar" : "Efetivado - Clique para Pendente"}
+                      </span>
+                    </button>
 
-                        <span className="absolute hidden group-hover:block bg-slate-900 text-white text-[10px] py-1 px-2 rounded -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap z-10 shadow-md">
-                          {transacao.efetuado === false ? "Pendente - Clique para Efetivar" : "Efetivado - Clique para Pendente"}
+                    {/* Center: description + badges + meta */}
+                    <div className="flex-1 min-w-0">
+                      <p className={`font-semibold text-sm truncate ${transacao.efetuado === false ? 'text-slate-400' : 'text-slate-800'}`}>
+                        {transacao.descricao}
+                      </p>
+                      <div className="flex items-center flex-wrap gap-1 mt-1">
+                        <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-semibold ${transacao.tipo === 'receita' ? 'bg-vblue-100 text-vblue' : 'bg-vcoral-100 text-vcoral'}`}>
+                          {transacao.tipo === 'receita' ? 'Receita' : 'Despesa'}
                         </span>
-                      </button>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex items-center space-x-2">
-                            <span className={`px-2 py-1 rounded-full text-xs font-semibold ${transacao.tipo === 'receita' ? 'bg-vblue-100 text-vblue' : 'bg-vcoral-100 text-vcoral'}`}>
-                              {transacao.tipo === 'receita' ? 'Receita' : 'Despesa'}
-                            </span>
-                            {transacao.contaId && contas.find(c => c.id === transacao.contaId) && (
-                              <span className="px-2 py-1 rounded-full text-[10px] font-semibold bg-bgray-100 text-slate-600 flex items-center border border-bgray">
-                                <Wallet size={10} className="mr-1" />
-                                {contas.find(c => c.id === transacao.contaId)?.nome}
-                              </span>
-                            )}
-                          </div>
-                          {transacao.efetuado === false && (
-                            <span className="text-[10px] font-semibold bg-vyellow-100 text-vyellow-800 px-1.5 py-0.5 rounded-full shrink-0">
-                              Agendado
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <p className={`font-medium text-xs truncate ${transacao.efetuado === false ? 'text-slate-500' : 'text-slate-800'}`}>
-                            {transacao.descricao}
-                          </p>
-                        </div>
-                        <div className="flex flex-col md:flex-row md:space-x-2 text-xs text-slate-500 mt-1">
-                          <span className="bg-bgray-100 px-2 py-0.5 rounded truncate max-w-[120px] text-xs">{transacao.categoria}</span>
-                          <span className="block md:hidden text-xs mt-1">{new Date(transacao.data).toLocaleDateString()}</span>
-                        </div>
+                        {transacao.contaId && contas.find(c => c.id === transacao.contaId) && (
+                          <span className="px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-bgray-100 text-slate-600 flex items-center border border-bgray">
+                            <Wallet size={9} className="mr-0.5" />
+                            {contas.find(c => c.id === transacao.contaId)?.nome}
+                          </span>
+                        )}
+                        {transacao.efetuado === false && (
+                          <span className="text-[10px] font-semibold bg-vyellow-100 text-vyellow-800 px-1.5 py-0.5 rounded-full">
+                            Agendado
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1.5 mt-1 text-[10px] text-slate-400">
+                        <span className="truncate max-w-[100px]">{transacao.categoria}</span>
+                        <span>·</span>
+                        <span className="flex items-center gap-0.5 shrink-0">
+                          <Calendar size={9} />
+                          {new Date(transacao.data).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
 
-                    <div className="flex flex-col items-end shrink-0 pl-4">
-                      <div className="hidden md:flex text-xs text-slate-500 mb-1 items-center">
-                        <Calendar size={10} className="mr-1" /> {new Date(transacao.data).toLocaleDateString()}
-                      </div>
-                      <span className={`font-bold text-xs sm:text-sm ${transacao.tipo === 'receita' ? 'text-vblue' : 'text-vcoral'}`} style={{ minWidth: '80px', textAlign: 'right' }}>
+                    {/* Right: value + actions */}
+                    <div className="flex flex-col items-end shrink-0">
+                      <span className={`font-bold text-sm ${transacao.tipo === 'receita' ? 'text-vblue' : 'text-vcoral'}`}>
                         {transacao.tipo === 'receita' ? '+' : '-'} R$ {transacao.valor.toFixed(2)}
                       </span>
-                      <div className="flex items-center space-x-1 mt-1">
+                      <div className="flex items-center gap-0.5 mt-1">
                         <Button
                           variant="ghost"
                           size="icon"
                           className="h-7 w-7 text-slate-400 hover:text-vblue hover:bg-vblue-50"
                           onClick={() => iniciarEdicaoTransacao(transacao)}
                         >
-                          <Edit2 size={14} />
+                          <Edit2 size={13} />
                         </Button>
                         <Button
                           variant="ghost"
@@ -680,7 +677,7 @@ export default function Financas({
                           className="h-7 w-7 text-slate-300 hover:text-vcoral hover:bg-vcoral-50"
                           onClick={() => removerTransacao(transacao.id)}
                         >
-                          <Trash2 size={14} />
+                          <Trash2 size={13} />
                         </Button>
                       </div>
                     </div>
