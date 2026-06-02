@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model TipoAtivo {
+  id                      String                @id @default(uuid())
+  nome                    String
+  descricao               String?
+  maxPatologiasEsperadas  Int                   @default(3)
+  pesoRelativoFuturo      Float?                // reservado para V2
+  criadoEm               DateTime              @default(now())
+  atualizadoEm           DateTime              @updatedAt
+  versoes                VersaoConfiguracao[]
+}
+
+model VersaoConfiguracao {
+  id           String               @id @default(uuid())
+  tipoAtivoId  String
+  versao       Int
+  status       String               @default("rascunho") // "rascunho" | "ativa" | "arquivada"
+  notas        String?
+  criadoEm    DateTime             @default(now())
+
+  tipoAtivo        TipoAtivo              @relation(fields: [tipoAtivoId], references: [id], onDelete: Cascade)
+  criteriosAtivo   CriterioAtivo[]
+  criteriosPatologia CriterioPatologia[]
+  matrizes         MatrizAHP[]
+
+  @@unique([tipoAtivoId, versao])
+}
+
+model CriterioAtivo {
+  id                   String                @id @default(uuid())
+  versaoConfiguracaoId String
+  nome                 String
+  descricao            String?
+  peso                 Float?
+  ordem                Int
+
+  versao  VersaoConfiguracao @relation(fields: [versaoConfiguracaoId], references: [id], onDelete: Cascade)
+  escalas EscalaCriterioAtivo[]
+}
+
+model EscalaCriterioAtivo {
+  id               String        @id @default(uuid())
+  criterioAtivoId  String
+  rotulo           String
+  valor            Float
+
+  criterio CriterioAtivo @relation(fields: [criterioAtivoId], references: [id], onDelete: Cascade)
+}
+
+model CriterioPatologia {
+  id                   String                    @id @default(uuid())
+  versaoConfiguracaoId String
+  nome                 String
+  descricao            String?
+  peso                 Float?
+  ordem                Int
+
+  versao  VersaoConfiguracao @relation(fields: [versaoConfiguracaoId], references: [id], onDelete: Cascade)
+  escalas EscalaCriterioPatologia[]
+}
+
+model EscalaCriterioPatologia {
+  id                  String            @id @default(uuid())
+  criterioPatologiaId String
+  rotulo              String
+  valor               Float
+
+  criterio CriterioPatologia @relation(fields: [criterioPatologiaId], references: [id], onDelete: Cascade)
+}
+
+model MatrizAHP {
+  id                   String   @id @default(uuid())
+  versaoConfiguracaoId String
+  tipo                 String   // "ativo" | "patologia"
+  dadosMatriz          String   // JSON serializado
+  indiceConsistencia   Float?
+  razaoConsistencia    Float?
+  valido               Boolean  @default(false)
+
+  versao VersaoConfiguracao @relation(fields: [versaoConfiguracaoId], references: [id], onDelete: Cascade)
+}
