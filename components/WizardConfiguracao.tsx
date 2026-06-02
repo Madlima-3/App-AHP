@@ -141,7 +141,8 @@ export function WizardConfiguracao({ tipoAtivoId, estadoBase }: Props) {
       });
 
       if (!respTipo.ok) {
-        setErro("Erro ao criar tipo de ativo.");
+        const detalhe = await respTipo.json().catch(() => ({}));
+        setErro(`Erro ao criar tipo de ativo (${respTipo.status}): ${JSON.stringify(detalhe)}`);
         setSalvando(false);
         return;
       }
@@ -156,7 +157,8 @@ export function WizardConfiguracao({ tipoAtivoId, estadoBase }: Props) {
     });
 
     if (!resp.ok) {
-      setErro("Erro ao salvar configuração.");
+      const detalhe = await resp.json().catch(() => ({}));
+      setErro(`Erro ao salvar configuração (${resp.status}): ${JSON.stringify(detalhe)}`);
       setSalvando(false);
       return;
     }

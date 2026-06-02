@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ export default async function DetalheAtivoPage({ params }: Props) {
     },
   });
 
-  if (!tipo) notFound();
+  if (!tipo) redirect("/");
 
   const versaoAtiva = tipo.versoes.find((v) => v.status === "ativa");
   const versaoExibir = versaoAtiva ?? tipo.versoes[0];
