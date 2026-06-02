@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Sistema de configuração de metodologia AHP para manutenção de infraestrutura ferroviária",
 };
 
-const isEphemeralDb = process.env.DATABASE_URL?.startsWith("file:/tmp/");
+const isEphemeralDb = process.env.DATABASE_URL?.startsWith("file:");
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,7 +1,4 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "env": {
-    "DATABASE_URL": "file:/tmp/dev.db"
-  }
+  "buildCommand": "npm run build"
 }

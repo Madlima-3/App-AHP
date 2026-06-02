@@ -1,11 +1,12 @@
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["native", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x"]
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 model TipoAtivo {
@@ -13,7 +14,7 @@ model TipoAtivo {
   nome                    String
   descricao               String?
   maxPatologiasEsperadas  Int                   @default(3)
-  pesoRelativoFuturo      Float?                // reservado para V2
+  pesoRelativoFuturo      Float?
   criadoEm               DateTime              @default(now())
   atualizadoEm           DateTime              @updatedAt
   versoes                VersaoConfiguracao[]
@@ -23,14 +24,14 @@ model VersaoConfiguracao {
   id           String               @id @default(uuid())
   tipoAtivoId  String
   versao       Int
-  status       String               @default("rascunho") // "rascunho" | "ativa" | "arquivada"
+  status       String               @default("rascunho")
   notas        String?
   criadoEm    DateTime             @default(now())
 
-  tipoAtivo        TipoAtivo              @relation(fields: [tipoAtivoId], references: [id], onDelete: Cascade)
-  criteriosAtivo   CriterioAtivo[]
+  tipoAtivo          TipoAtivo              @relation(fields: [tipoAtivoId], references: [id], onDelete: Cascade)
+  criteriosAtivo     CriterioAtivo[]
   criteriosPatologia CriterioPatologia[]
-  matrizes         MatrizAHP[]
+  matrizes           MatrizAHP[]
 
   @@unique([tipoAtivoId, versao])
 }
@@ -43,7 +44,7 @@ model CriterioAtivo {
   peso                 Float?
   ordem                Int
 
-  versao  VersaoConfiguracao @relation(fields: [versaoConfiguracaoId], references: [id], onDelete: Cascade)
+  versao  VersaoConfiguracao  @relation(fields: [versaoConfiguracaoId], references: [id], onDelete: Cascade)
   escalas EscalaCriterioAtivo[]
 }
 
@@ -64,7 +65,7 @@ model CriterioPatologia {
   peso                 Float?
   ordem                Int
 
-  versao  VersaoConfiguracao @relation(fields: [versaoConfiguracaoId], references: [id], onDelete: Cascade)
+  versao  VersaoConfiguracao      @relation(fields: [versaoConfiguracaoId], references: [id], onDelete: Cascade)
   escalas EscalaCriterioPatologia[]
 }
 
@@ -80,8 +81,8 @@ model EscalaCriterioPatologia {
 model MatrizAHP {
   id                   String   @id @default(uuid())
   versaoConfiguracaoId String
-  tipo                 String   // "ativo" | "patologia"
-  dadosMatriz          String   // JSON serializado
+  tipo                 String
+  dadosMatriz          String
   indiceConsistencia   Float?
   razaoConsistencia    Float?
   valido               Boolean  @default(false)
